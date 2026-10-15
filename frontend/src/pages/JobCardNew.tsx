@@ -183,15 +183,6 @@ export default function JobCardNew() {
     return cleaned;
   };
 
-  const canProceed = () => {
-    const cleanMobile = cleanMobileNo(customer.mobile_no);
-    return (vehicle.reg_no || '').trim().length >= 4 && 
-           (vehicle.car_name || '').trim().length >= 2 && 
-           cleanMobile.length === 10;
-  };
-
-
-
   const handleRegSelect = (val: string, linked?: LinkedSuggestionData) => {
     handleVehicleField('reg_no', val);
     lookupVehicle(val, true);
@@ -220,23 +211,13 @@ export default function JobCardNew() {
   };
 
   const handleSubmit = async () => {
-    if (!canProceed()) {
-      if (!vehicle.reg_no || vehicle.reg_no.trim().length < 4) {
-        showToast('Please enter a valid Registration Number (at least 4 characters)', 'warning');
-      } else if (!vehicle.car_name || vehicle.car_name.trim().length < 2) {
-        showToast('Please enter Car Name / Model (at least 2 characters)', 'warning');
-      } else if (cleanMobileNo(customer.mobile_no).length !== 10) {
-        showToast('Please enter a valid 10-digit Mobile Number', 'warning');
-      }
-      return;
-    }
-
     setSubmitting(true);
     try {
-      const cleanCarName = vehicle.car_name.trim();
+      const cleanCarName = (vehicle.car_name || '').trim();
+      const cleanRegNo = (vehicle.reg_no || '').trim().toUpperCase();
 
       const body: Record<string, any> = {
-        reg_no: vehicle.reg_no,
+        reg_no: cleanRegNo,
         car_name: cleanCarName,
         customer_type: custType,
         job_date: jobDate,
@@ -304,11 +285,6 @@ export default function JobCardNew() {
           disabled={opts?.disabled}
           className="w-full bg-white border border-stone-200/90 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 py-3 px-4 font-semibold text-sm text-stone-900 placeholder:text-stone-400 shadow-sm transition-all"
         />
-        {field === 'mobile_no' && obj[field] && cleanMobileNo(obj[field]).length !== 10 && (
-          <p className="mt-1 text-xs text-red-500 font-medium">
-            Mobile number must be exactly 10 digits.
-          </p>
-        )}
       </div>
     );
   };
@@ -421,7 +397,7 @@ export default function JobCardNew() {
                 {/* Registration Number */}
                 <div>
                   <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">
-                    Registration Number <span className="text-rose-500">*</span>
+                    Registration Number
                   </label>
                   <div className="flex gap-2">
                     <SuggestInput
@@ -451,7 +427,7 @@ export default function JobCardNew() {
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider">
-                      Car Name / Model <span className="text-rose-500">*</span>
+                      Car Name / Model
                     </label>
                   </div>
                   <SuggestInput
@@ -527,21 +503,16 @@ export default function JobCardNew() {
 
                 {/* Mobile Number */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Mobile Number *</label>
+                  <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Mobile Number</label>
                   <SuggestInput
                     type="mobile_no"
                     value={customer.mobile_no}
                     maxLength={10}
                     onChange={(val) => handleCustomerField('mobile_no', val.replace(/\D/g, '').slice(0, 10))}
                     onSelect={handleMobileSelect}
-                    placeholder="10-digit number"
+                    placeholder="10-digit number (Optional)"
                     className="w-full bg-white border border-stone-200/90 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 py-3 px-4 font-semibold text-sm text-stone-900 placeholder:text-stone-400 shadow-sm transition-all"
                   />
-                  {customer.mobile_no && cleanMobileNo(customer.mobile_no).length !== 10 && (
-                    <p className="mt-1 text-xs text-red-500 font-medium">
-                      Mobile number must be exactly 10 digits.
-                    </p>
-                  )}
                 </div>
 
                 {renderStitchInput('Alternate Mobile', 'alt_mobile', customer, handleCustomerField, { type: 'tel', placeholder: 'Optional 10-digit number' })}
@@ -679,16 +650,11 @@ export default function JobCardNew() {
           </button>
         </div>
         <div className="flex items-center gap-4">
-          {!canProceed() && (
-            <p className="text-xs text-slate-400 font-medium mr-4">
-              Please enter registration number, car name, and a 10-digit mobile number.
-            </p>
-          )}
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.97 }}
             onClick={handleSubmit}
-            disabled={submitting || !canProceed()}
+            disabled={submitting}
             className="px-8 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-stone-950 rounded-xl font-extrabold text-sm shadow-lg shadow-amber-500/25 transition-all flex items-center gap-2 disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed active:scale-95"
           >
             {submitting ? (

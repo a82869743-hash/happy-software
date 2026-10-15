@@ -102,10 +102,6 @@ export default function QuickJobCardModal({ onClose, onCreated }: Props) {
   };
 
   const handleSubmit = async () => {
-    if (!regNo.trim() || !mobile.trim() || !carName.trim()) {
-      showToast('Please enter registration number, car name, and mobile number', 'error');
-      return;
-    }
     if (selectedServices.length === 0 && !customService.trim()) {
       showToast('Please select at least one service', 'error');
       return;
@@ -114,7 +110,7 @@ export default function QuickJobCardModal({ onClose, onCreated }: Props) {
     setSaving(true);
     try {
       const res = await api.post('/quick-job-cards', {
-        reg_no: regNo.toUpperCase().trim(),
+        reg_no: (regNo || '').toUpperCase().trim(),
         owner_name: ownerName.trim() || 'Customer',
         mobile: mobile.trim(),
         address: address.trim(),
@@ -169,14 +165,14 @@ export default function QuickJobCardModal({ onClose, onCreated }: Props) {
           </div>
           <div>
             <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
-              Mobile <span className="text-red-400">*</span>
+              Mobile
             </label>
             <SuggestInput
               type="mobile_no"
               value={mobile}
               onChange={(val) => setMobile(val.replace(/\D/g, '').slice(0, 10))}
               onSelect={handleMobileSelect}
-              placeholder="9876543210"
+              placeholder="9876543210 (Optional)"
               maxLength={10}
               className={inputCls}
             />
@@ -195,7 +191,7 @@ export default function QuickJobCardModal({ onClose, onCreated }: Props) {
           </div>
           <div>
             <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
-              Reg. No <span className="text-red-400">*</span>
+              Reg. No
             </label>
             <SuggestInput
               type="reg_no"
@@ -209,7 +205,7 @@ export default function QuickJobCardModal({ onClose, onCreated }: Props) {
           </div>
           <div>
             <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
-              Car Name <span className="text-red-400">*</span>
+              Car Name
             </label>
             <SuggestInput
               type="car_name"

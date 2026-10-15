@@ -759,17 +759,16 @@ router.post('/', async (req, res) => {
       insurance_expiry, spare_wheel, pointers, charging_pct, company, job_date, payment_mode
     } = req.body;
 
-    if (!reg_no || !car_name) {
-      await conn.rollback();
-      conn.release();
-      return res.status(400).json({ error: 'Registration number and car name required' });
-    }
+    const finalRegNo = (reg_no || '').toUpperCase().trim();
+    const finalCarName = (car_name || '').trim();
+    const finalOwnerName = (customer_name || owner_name || '').trim() || 'Customer';
+    const finalMobile = (mobile_no || '').trim();
 
     // 1. Create or link customer
     let finalCustomerId = customer_id || null;
-    if (!finalCustomerId && (customer_name || owner_name) && mobile_no) {
+    if (!finalCustomerId && finalOwnerName && finalMobile) {
       const [existing] = await conn.query(
-        'SELECT id FROM customers WHERE mobile_no = ? LIMIT 1', [mobile_no]
+        'SELECT id FROM customers WHERE mobile_no = ? LIMIT 1', [finalMobile]
       );
       if (existing.length > 0) {
         finalCustomerId = existing[0].id;
@@ -780,8 +779,8 @@ router.post('/', async (req, res) => {
             address_line, colony_street, city, state, state_code, pincode, birth_date, is_sez)
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
-            customer_type || 'individual', customer_name || owner_name, nullIfEmpty(company_name),
-            nullIfEmpty(gstin), nullIfEmpty(ref_no), mobile_no, nullIfEmpty(alt_mobile), nullIfEmpty(email),
+            customer_type || 'individual', finalOwnerName, nullIfEmpty(company_name),
+            nullIfEmpty(gstin), nullIfEmpty(ref_no), finalMobile, nullIfEmpty(alt_mobile), nullIfEmpty(email),
             nullIfEmpty(contact_person), nullIfEmpty(driver_name), nullIfEmpty(address_line),
             nullIfEmpty(colony_street), nullIfEmpty(city), nullIfEmpty(state), nullIfEmpty(state_code),
             nullIfEmpty(pincode), nullIfEmpty(birth_date), is_sez ? 1 : 0
@@ -793,8 +792,8 @@ router.post('/', async (req, res) => {
 
     // 2. Create or link vehicle
     let finalVehicleId = vehicle_id || null;
-    if (!finalVehicleId && reg_no) {
-      const [existingV] = await conn.query('SELECT id FROM vehicles WHERE reg_no = ?', [reg_no.toUpperCase().trim()]);
+    if (!finalVehicleId && finalRegNo) {
+      const [existingV] = await conn.query('SELECT id FROM vehicles WHERE reg_no = ?', [finalRegNo]);
       if (existingV.length > 0) {
         finalVehicleId = existingV[0].id;
         // Update vehicle details if provided
@@ -837,8 +836,8 @@ router.post('/', async (req, res) => {
             approval_status, approval_date, fuel_level, public_token, spare_wheel, pointers, charging_pct, company, job_date, payment_mode)
            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ready', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
-            job_no, rfe_no, reg_no.toUpperCase().trim(), car_name,
-            customer_name || owner_name || '', mobile_no || '',
+            job_no, rfe_no, finalRegNo, finalCarName,
+            finalOwnerName, finalMobile,
             finalCustomerId, finalVehicleId,
             nullIfEmpty(odometer), nullIfEmpty(avg_km_day) || 25, nullIfEmpty(service_type), nullIfEmpty(service_advisor),
             nullIfEmpty(estimated_delivery), is_inhouse ? 1 : 0,

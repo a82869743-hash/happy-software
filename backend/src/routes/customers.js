@@ -181,9 +181,8 @@ router.post('/', async (req, res) => {
       birth_date, is_sez
     } = req.body;
 
-    if (!customer_name || !mobile_no) {
-      return res.status(400).json({ error: 'Customer name and mobile number required' });
-    }
+    const finalCustomerName = (customer_name || '').trim() || 'Customer';
+    const finalMobile = (mobile_no || '').trim() || null;
 
     const [result] = await db.execute(
       `INSERT INTO customers (customer_type, customer_name, company_name, gstin, ref_no,
@@ -191,8 +190,8 @@ router.post('/', async (req, res) => {
         address_line, colony_street, city, state, state_code, pincode, birth_date, is_sez)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        customer_type || 'individual', customer_name, company_name || null, gstin || null, ref_no || null,
-        mobile_no, alt_mobile || null, email || null, contact_person || null, driver_name || null,
+        customer_type || 'individual', finalCustomerName, company_name || null, gstin || null, ref_no || null,
+        finalMobile, alt_mobile || null, email || null, contact_person || null, driver_name || null,
         address_line || null, colony_street || null, city || null, state || null,
         state_code || null, pincode || null, birth_date || null, is_sez ? 1 : 0
       ]

@@ -308,6 +308,7 @@ if exist "!APP_DIR!\backend\scripts\migrate_three_companies.js" (
     echo       - Executing database migration and detailing record repairs...
     "%NODE_EXE%" scripts\migrate_three_companies.js
     if exist "scripts\fixDbIssues.js" "%NODE_EXE%" scripts\fixDbIssues.js
+    if exist "src\config\runAllMigrations.js" "%NODE_EXE%" src\config\runAllMigrations.js
     popd
     echo       - Database schema verified (all client records, job cards, and invoices preserved).
 )

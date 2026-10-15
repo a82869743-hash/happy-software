@@ -60,8 +60,18 @@ async function fix() {
     for (const r of rows) {
       const invNo = `ACC-${String(r.id).padStart(4, '0')}`;
       await db.query("UPDATE product_sales SET invoice_no = ? WHERE id = ?", [invNo, r.id]);
+    // 6. Ensure job_cards and customers columns are non-mandatory
+    try {
+      await db.query("ALTER TABLE job_cards MODIFY COLUMN reg_no VARCHAR(20) NULL DEFAULT ''");
+      await db.query("ALTER TABLE job_cards MODIFY COLUMN car_name VARCHAR(100) NULL DEFAULT ''");
+      await db.query("ALTER TABLE job_cards MODIFY COLUMN owner_name VARCHAR(150) NULL DEFAULT 'Customer'");
+      await db.query("ALTER TABLE job_cards MODIFY COLUMN mobile_no VARCHAR(20) NULL DEFAULT ''");
+      await db.query("ALTER TABLE customers MODIFY COLUMN customer_name VARCHAR(200) NULL DEFAULT 'Customer'");
+      await db.query("ALTER TABLE customers MODIFY COLUMN mobile_no VARCHAR(20) NULL DEFAULT NULL");
+      console.log('job_cards & customers non-mandatory columns ensured.');
+    } catch (e) {
+      console.warn('Note setting non-mandatory columns in fixDbIssues:', e.message);
     }
-    console.log(`Fixed ${rows.length} product_sales invoice numbers.`);
 
     console.log('DB fixes completed successfully.');
     process.exit(0);

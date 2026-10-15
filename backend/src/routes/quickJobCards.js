@@ -226,18 +226,15 @@ router.post('/', async (req, res) => {
     const odoVal = odometer || km_reading || null;
     const targetJobDate = job_date ? new Date(job_date) : new Date();
     const finalOwnerName = (owner_name || '').trim() || 'Customer';
-
-    if (!reg_no || !mobile || !car_name) {
-      await conn.rollback();
-      conn.release();
-      return res.status(400).json({ error: 'reg_no, mobile, and car_name are required' });
-    }
+    const finalRegNo = (reg_no || '').toUpperCase().trim();
+    const finalCarName = (car_name || '').trim();
+    const finalMobile = (mobile || '').trim();
 
     // Upsert customer info
     let customer_id = null;
-    if (mobile) {
+    if (finalMobile) {
       try {
-        const [existingCust] = await conn.query('SELECT id, address_line FROM customers WHERE mobile_no = ?', [mobile.trim()]);
+        const [existingCust] = await conn.query('SELECT id, address_line FROM customers WHERE mobile_no = ?', [finalMobile]);
         if (existingCust.length > 0) {
           customer_id = existingCust[0].id;
           if (address && address.trim()) {
@@ -249,7 +246,7 @@ router.post('/', async (req, res) => {
         } else {
           const [cRes] = await conn.execute(
             'INSERT INTO customers (customer_name, mobile_no, address_line) VALUES (?, ?, ?)',
-            [finalOwnerName, mobile.trim(), address ? address.trim() : null]
+            [finalOwnerName, finalMobile, address ? address.trim() : null]
           );
           customer_id = cRes.insertId;
         }
@@ -265,7 +262,7 @@ router.post('/', async (req, res) => {
     const [result] = await conn.execute(
       `INSERT INTO job_cards (job_no, reg_no, car_name, owner_name, mobile_no, customer_id, status, is_quick_job, public_token, odometer, company, job_date, payment_mode)
        VALUES (?, ?, ?, ?, ?, ?, 'ready', 1, ?, ?, 'Car Wash', ?, ?)`,
-      [job_no, reg_no.toUpperCase().trim(), car_name.trim(), finalOwnerName, mobile.trim(), customer_id, public_token, odoVal, targetJobDate, payment_mode]
+      [job_no, finalRegNo, finalCarName, finalOwnerName, finalMobile, customer_id, public_token, odoVal, targetJobDate, payment_mode]
     );
     const jobId = result.insertId;
 

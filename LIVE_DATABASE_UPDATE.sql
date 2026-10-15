@@ -1,4 +1,4 @@
-﻿-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 -- HAPPY CAR WASH GMS â€” SAFE LIVE DATABASE UPDATE SCRIPT
 -- Paste and execute this directly in phpMyAdmin > SQL tab on your live database!
 -- Safe to run on live data (Uses IF NOT EXISTS / ADD COLUMN IF NOT EXISTS)
@@ -51,6 +51,14 @@ CREATE TABLE IF NOT EXISTS `custom_categories` (
   `category_name` VARCHAR(100) NOT NULL UNIQUE,
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- 6. Ensure non-mandatory fields for job_cards and customers
+ALTER TABLE `job_cards` MODIFY COLUMN `reg_no` VARCHAR(20) NULL DEFAULT '';
+ALTER TABLE `job_cards` MODIFY COLUMN `car_name` VARCHAR(100) NULL DEFAULT '';
+ALTER TABLE `job_cards` MODIFY COLUMN `owner_name` VARCHAR(150) NULL DEFAULT 'Customer';
+ALTER TABLE `job_cards` MODIFY COLUMN `mobile_no` VARCHAR(20) NULL DEFAULT '';
+ALTER TABLE `customers` MODIFY COLUMN `customer_name` VARCHAR(200) NULL DEFAULT 'Customer';
+ALTER TABLE `customers` MODIFY COLUMN `mobile_no` VARCHAR(20) NULL DEFAULT NULL;
 
 SET FOREIGN_KEY_CHECKS = 1;
 

@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 const db = require('./db');
 
@@ -22,7 +22,8 @@ async function runAllMigrations() {
     'migration_v11_estimate_payments.sql',
     'migration_v12_payment_mode_length.sql',
     'migration_v13_enhancements.sql',
-    'migration_v14_payment_status.sql'
+    'migration_v14_payment_status.sql',
+    'migration_v16_non_mandatory_fields.sql'
   ];
 
   for (const file of migrationFiles) {

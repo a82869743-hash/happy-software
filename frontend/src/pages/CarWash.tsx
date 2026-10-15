@@ -236,10 +236,6 @@ export default function CarWash() {
   };
 
   const handleSubmit = async () => {
-    if (!mobile.trim() || !regNo.trim() || !carName.trim()) {
-      showToast('Please fill all required fields (Mobile, Reg. No, Car Name)', 'error');
-      return;
-    }
     if (selectedServices.length === 0 && !customService.trim()) {
       showToast('Please select at least one wash service', 'error');
       return;
@@ -248,7 +244,7 @@ export default function CarWash() {
     setSaving(true);
     try {
       const payload = {
-        reg_no: regNo.toUpperCase().trim(),
+        reg_no: (regNo || '').toUpperCase().trim(),
         owner_name: ownerName.trim() || 'Customer',
         mobile: mobile.trim(),
         address: address.trim(),
@@ -470,14 +466,14 @@ export default function CarWash() {
               {/* 2. Mobile */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Mobile Number <span className="text-red-500">*</span>
+                  Mobile Number
                 </label>
                 <SuggestInput
                   type="mobile_no"
                   value={mobile}
                   onChange={(val) => setMobile(val.replace(/\D/g, '').slice(0, 10))}
                   onSelect={handleMobileSelect}
-                  placeholder="9876543210"
+                  placeholder="9876543210 (Optional)"
                   maxLength={10}
                   className={inputCls}
                 />
@@ -500,7 +496,7 @@ export default function CarWash() {
               {/* 4. Reg. No */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Registration No <span className="text-red-500">*</span>
+                  Registration No
                 </label>
                 <SuggestInput
                   type="reg_no"
@@ -516,7 +512,7 @@ export default function CarWash() {
               {/* 5. Car Name */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Car Name <span className="text-red-500">*</span>
+                  Car Name
                 </label>
                 <SuggestInput
                   type="car_name"
