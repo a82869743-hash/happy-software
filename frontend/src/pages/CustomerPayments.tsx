@@ -4,9 +4,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import api from '../api/axios';
 import AnimatedPage from '../components/shared/AnimatedPage';
 import { showToast } from '../components/shared/Toast';
-import { numberToWordsRupees } from '../utils/numberToWords';
 import { useKillSwitchLock } from '../hooks/useKillSwitchLock';
-import { getDivisionConfig, generateUPIQrCode, numberToWords, fmtCurrency } from '../utils/invoiceFormat';
+import {
+  getDivisionConfig,
+  getDivisionConfigByDivision,
+  resolveDivision,
+  generateStatementNumber,
+  generateUPIQrCode,
+  numberToWords,
+  fmtCurrency,
+  type DivisionType
+} from '../utils/invoiceFormat';
+import { renderDivisionBillHtml } from '../utils/divisionBillRenderer';
 interface Payment {
   id: number;
   job_card_id?: number | null;
@@ -720,242 +729,120 @@ function BulkClearModal({
   );
 }
 
-function printConsolidatedBillSheet({
+export function groupDocsByDivision(documents: any[]) {
+  const result: Record<DivisionType, {
+    division: DivisionType;
+    label: string;
+    documents: any[];
+    totalBilled: number;
+    totalPaid: number;
+    totalPending: number;
+    vehicles: Set<string>;
+  }> = {
+    car_wash: { division: 'car_wash', label: 'Car Wash', documents: [], totalBilled: 0, totalPaid: 0, totalPending: 0, vehicles: new Set() },
+    detailing: { division: 'detailing', label: 'Detailing Studio', documents: [], totalBilled: 0, totalPaid: 0, totalPending: 0, vehicles: new Set() },
+    accessories: { division: 'accessories', label: 'Accessories', documents: [], totalBilled: 0, totalPaid: 0, totalPending: 0, vehicles: new Set() }
+  };
+
+  for (const doc of documents) {
+    const div = resolveDivision(doc);
+    const grp = result[div];
+    grp.documents.push(doc);
+    const b = parseFloat(String(doc.total_billed || 0));
+    const p = parseFloat(String(doc.total_paid || 0));
+    const due = parseFloat(String(doc.balance !== undefined ? doc.balance : b - p));
+    grp.totalBilled += b;
+    grp.totalPaid += p;
+    grp.totalPending += due;
+    const reg = (doc.reg_no || '').trim().toUpperCase();
+    if (reg) grp.vehicles.add(reg);
+  }
+
+  return result;
+}
+
+async function printConsolidatedBillSheet({
   clientName,
   phone,
-  vehicles = [],
+  division,
   documents = [],
   totalBilled,
   totalPaid,
   totalPending,
-  paymentMode = 'Cash',
+  paymentMode = 'Pending Statement',
   paymentDate,
   receiptNo,
-  isSettled = true
-}: any) {
+  isSettled = false,
+  remarks
+}: {
+  clientName: string;
+  phone?: string;
+  division?: DivisionType;
+  documents: any[];
+  totalBilled?: number;
+  totalPaid?: number;
+  totalPending?: number;
+  paymentMode?: string;
+  paymentDate?: string;
+  receiptNo?: string;
+  isSettled?: boolean;
+  remarks?: string;
+  vehicles?: any[];
+}) {
   const win = window.open('', '_blank');
   if (!win) return;
 
-  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-  const serverUrl = baseUrl.replace(/\/api\/?$/, '');
-  const primaryLogoUrl = `${window.location.origin}/happy-logo.png`;
-  const fallbackLogoUrl = `${serverUrl}/uploads/happy-logo.png`;
-
-  const billNo = receiptNo || `HCW-CSL-${Date.now().toString().slice(-6)}`;
+  const targetDivision: DivisionType = division || (documents.length > 0 ? resolveDivision(documents[0]) : 'detailing');
+  const divConfig = getDivisionConfigByDivision(targetDivision);
+  const billNo = receiptNo || generateStatementNumber(targetDivision);
   const dateStr = paymentDate
     ? new Date(paymentDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
     : new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-  const amountToWord = numberToWordsRupees(totalPending);
+
+  const calculatedTotalBilled = totalBilled !== undefined
+    ? totalBilled
+    : documents.reduce((sum, d) => sum + parseFloat(String(d.total_billed || 0)), 0);
+  const calculatedTotalPaid = totalPaid !== undefined
+    ? totalPaid
+    : documents.reduce((sum, d) => sum + parseFloat(String(d.total_paid || 0)), 0);
+  const calculatedTotalPending = totalPending !== undefined
+    ? totalPending
+    : (calculatedTotalBilled - calculatedTotalPaid);
 
   const uniqueVehiclesCount = new Set(
     documents.map((doc: any) => (doc.reg_no || '').trim().toUpperCase()).filter(Boolean)
-  ).size || (vehicles && vehicles.length) || 1;
+  ).size || 1;
 
-  const rowsHtml = documents
-    .map((doc: any, idx: number) => {
-      const dDate =
-        doc.job_date || doc.doc_date
-          ? new Date(doc.job_date || doc.doc_date).toLocaleDateString('en-IN', {
-              day: '2-digit',
-              month: 'short',
-              year: 'numeric'
-            })
-          : '—';
-      const veh = doc.reg_no
-        ? `${doc.reg_no}${doc.car_name ? ` · ${doc.car_name}` : ''}`
-        : doc.car_name || 'Vehicle';
-      const sType = doc.service_type || doc.type || 'Car Wash / Detailing';
-      const bAmt = parseFloat(String(doc.total_billed || 0));
-      const pAmt = parseFloat(String(doc.total_paid || 0));
-      const dueAmt = parseFloat(String(doc.balance !== undefined ? doc.balance : bAmt - pAmt));
+  let activeQr = '';
+  try {
+    const dueAmount = isSettled
+      ? calculatedTotalPending
+      : (calculatedTotalPending > 0 ? calculatedTotalPending : calculatedTotalBilled);
+    activeQr = await generateUPIQrCode(divConfig, dueAmount, `Statement ${billNo}`);
+  } catch {
+    activeQr = '';
+  }
 
-      return `
-      <tr>
-        <td style="text-align: center; font-weight: 700; color: #64748b;">${idx + 1}</td>
-        <td style="white-space: nowrap; color: #334155;">${dDate}</td>
-        <td style="font-family: monospace; font-weight: 800; color: #0f172a;">${doc.doc_no || doc.job_no || '—'}</td>
-        <td style="font-weight: 700; color: #0f172a;">${veh}</td>
-        <td style="color: #1e293b; font-weight: 600;">${sType}</td>
-        <td style="text-align: right; font-weight: 600; color: #334155;">₹${bAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-        <td style="text-align: right; font-weight: 600; color: #059669;">₹${pAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-        <td style="text-align: right; font-weight: 800; color: #0f172a;">₹${dueAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-        <td style="text-align: center;">
-          <span style="display: inline-block; font-size: 8.5px; font-weight: 800; padding: 2px 6px; border-radius: 4px; ${
-            isSettled
-              ? 'background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;'
-              : 'background: #fff1f2; color: #be123c; border: 1px solid #fecdd3;'
-          }">
-            ${isSettled ? 'PAID' : 'DUE'}
-          </span>
-        </td>
-      </tr>
-    `;
-    })
-    .join('');
+  const html = renderDivisionBillHtml(divConfig, {
+    mode: 'statement',
+    billTitle: isSettled ? 'Consolidated Settlement Bill' : 'Statement of Dues',
+    docNo: billNo,
+    dateStr: dateStr,
+    customerName: clientName,
+    customerMobile: phone || '',
+    totalVehicles: uniqueVehiclesCount,
+    totalJobs: documents.length,
+    documents: documents,
+    totalBilled: calculatedTotalBilled,
+    paidAmount: calculatedTotalPaid,
+    totalPending: calculatedTotalPending,
+    isSettled: isSettled,
+    paymentMode: paymentMode,
+    remarks: remarks,
+    activeQr: activeQr
+  });
 
-  win.document.write(`
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <meta charset="utf-8" />
-        <title>Consolidated Statement Bill - ${clientName} - ${billNo}</title>
-        <style>
-          @page { size: A4 portrait; margin: 6mm; }
-          * { box-sizing: border-box; }
-          html, body { margin: 0; padding: 0; background: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; color: #0f172a; font-size: 10px; line-height: 1.3; }
-          thead { display: table-header-group; }
-          tfoot { display: table-footer-group; }
-          tr { page-break-inside: avoid; }
-          .summary-sec, .footer-sec, .bottom-section { page-break-inside: avoid; }
-          @media print {
-            body { padding: 0; }
-            .sheet-box { border: 1.5px solid #0f172a !important; box-shadow: none !important; }
-            thead { display: table-header-group; }
-            tr { page-break-inside: avoid; }
-          }
-          .sheet-box { border: 1.5px solid #0f172a; border-radius: 6px; padding: 12px 16px; max-width: 800px; margin: 0 auto; box-sizing: border-box; }
-          .header-table { width: 100%; border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 8px; }
-          .logo-box { width: 110px; vertical-align: top; }
-          .logo-box img { max-height: 48px; width: auto; object-fit: contain; }
-          .comp-box { vertical-align: top; padding-left: 12px; }
-          .comp-name { font-size: 18px; font-weight: 900; letter-spacing: 0.5px; color: #0f172a; margin: 0 0 2px 0; }
-          .comp-desc { font-size: 9px; color: #475569; margin: 0; line-height: 1.3; }
-          .meta-box { width: 250px; vertical-align: top; text-align: right; }
-          .bill-badge { display: inline-block; background: #0f172a; color: #fff; font-size: 9.5px; font-weight: 900; letter-spacing: 0.8px; padding: 2px 8px; border-radius: 4px; text-transform: uppercase; margin-bottom: 4px; }
-          .meta-row { font-size: 10px; margin: 2px 0; }
-          .meta-label { color: #64748b; font-weight: 600; }
-          .meta-val { color: #0f172a; font-weight: 800; font-family: monospace; }
-
-          .client-bar { background: #f8fafc; border: 1.2px solid #cbd5e1; border-radius: 6px; padding: 6px 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-          .c-name { font-size: 12px; font-weight: 900; color: #0f172a; }
-          .c-phone { font-size: 10px; color: #475569; font-weight: 600; margin-top: 1px; }
-          .c-veh { font-size: 11px; color: #0f172a; font-weight: 800; text-align: right; }
-
-          .tbl { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
-          .tbl th { background: #0f172a; color: #fff; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 6px; text-align: left; }
-          .tbl td { border-bottom: 1px solid #e2e8f0; padding: 4px 6px; font-size: 9.5px; vertical-align: middle; }
-          .tbl tbody tr:nth-child(even) { background: #f8fafc; }
-
-          .summary-sec { display: flex; justify-content: space-between; align-items: flex-start; padding-top: 6px; border-top: 1.5px solid #0f172a; margin-top: 6px; }
-          .words-sec { flex: 1; padding-right: 15px; }
-          .words-lbl { font-size: 8.5px; font-weight: 800; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; }
-          .words-val { font-size: 10px; font-weight: 800; color: #0f172a; font-style: italic; margin-top: 2px; }
-          .status-stamp { margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 4px; font-weight: 900; font-size: 10.5px; letter-spacing: 0.5px; text-transform: uppercase; ${
-            isSettled
-              ? 'background: #ecfdf5; color: #047857; border: 1.2px solid #059669;'
-              : 'background: #fff1f2; color: #be123c; border: 1.2px solid #e11d48;'
-          } }
-
-          .totals-sec { width: 260px; background: #f8fafc; border: 1.2px solid #cbd5e1; border-radius: 6px; padding: 6px 10px; }
-          .t-row { display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 2px; }
-          .t-final { border-top: 1.2px solid #0f172a; padding-top: 4px; margin-top: 4px; font-size: 13px; font-weight: 900; color: #0f172a; }
-
-          .footer-sec { margin-top: 8px; padding-top: 6px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; align-items: flex-end; }
-          .note-text { font-size: 8.5px; color: #64748b; max-width: 460px; line-height: 1.3; }
-          .sign-area { text-align: center; width: 160px; }
-          .sign-line { border-bottom: 1.2px solid #0f172a; height: 26px; margin-bottom: 3px; }
-          .sign-lbl { font-size: 9px; font-weight: 800; color: #0f172a; }
-        </style>
-      </head>
-      <body>
-        <div class="sheet-box">
-          <div>
-            <!-- Header Table -->
-            <table class="header-table">
-              <tr>
-                <td class="logo-box">
-                  <img src="${primaryLogoUrl}" alt="Happy Car Wash Logo" onError="if(this.src!=='${fallbackLogoUrl}'){this.src='${fallbackLogoUrl}';}else{this.style.display='none';this.nextElementSibling.style.display='block';}" />
-                  <div style="display:none;">
-                    <svg width="100" height="34" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M10 30L40 10L30 30L60 10L45 50L10 30Z" fill="#0284C7"/>
-                      <text x="70" y="40" font-family="Arial" font-size="32" font-weight="900" fill="#0F172A">HAPPY</text>
-                    </svg>
-                  </div>
-                </td>
-                <td class="comp-box">
-                  <h1 class="comp-name">Happy Car Wash & Detailing Studio</h1>
-                  <p class="comp-desc">
-                    8/9 GIDC - Vadsar Main Road Mohangiri, opp. Uma Co Op Bank Ltd, near Bank Of Baroda, Makarpura, Vadodara, Gujarat 390010<br/>
-                    Phone: <strong>+91 99986 25511</strong> | Complete Auto Care & Fleet Services
-                  </p>
-                </td>
-                <td class="meta-box">
-                  <div class="bill-badge">${isSettled ? 'CONSOLIDATED SETTLEMENT BILL' : 'CONSOLIDATED STATEMENT BILL'}</div>
-                  <div class="meta-row"><span class="meta-label">Bill / Stmt No:</span> <span class="meta-val">${billNo}</span></div>
-                  <div class="meta-row"><span class="meta-label">Date:</span> <span class="meta-val">${dateStr}</span></div>
-                  <div class="meta-row"><span class="meta-label">Payment Mode:</span> <span class="meta-val">${paymentMode.toUpperCase()}</span></div>
-                </td>
-              </tr>
-            </table>
-
-            <!-- Client & Fleet Account Bar -->
-            <div class="client-bar">
-              <div>
-                <div class="c-name">Billed To: ${clientName}</div>
-                <div class="c-phone">Phone: ${phone || '—'}</div>
-              </div>
-              <div class="c-veh">
-                Total Vehicles: <strong>${uniqueVehiclesCount}</strong> &nbsp;•&nbsp; Total Jobs: <strong>${documents.length}</strong>
-              </div>
-            </div>
-
-            <!-- Crisp Items Table -->
-            <table class="tbl">
-              <thead>
-                <tr>
-                  <th style="width: 26px; text-align: center;">#</th>
-                  <th style="width: 75px;">Date</th>
-                  <th style="width: 85px;">Doc / Job No</th>
-                  <th style="width: 140px;">Vehicle (Reg & Model)</th>
-                  <th>Service / Description</th>
-                  <th style="width: 75px; text-align: right;">Billed ₹</th>
-                  <th style="width: 70px; text-align: right;">Paid ₹</th>
-                  <th style="width: 75px; text-align: right;">${isSettled ? 'Settled ₹' : 'Due ₹'}</th>
-                  <th style="width: 55px; text-align: center;">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${rowsHtml}
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Bottom Section: Summary & Signatures -->
-          <div>
-            <div class="summary-sec">
-              <div class="words-sec">
-                <div class="words-lbl">Amount in Words:</div>
-                <div class="words-val">${amountToWord || 'Zero Rupees'}</div>
-                <div class="status-stamp">
-                  ${isSettled ? '✓ Paid & Settled in Full' : '⏳ Pending Statement of Dues'}
-                </div>
-              </div>
-              <div class="totals-sec">
-                <div class="t-row"><span style="color:#64748b;">Total Billed Gross:</span> <span style="font-weight:700;">₹${totalBilled.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></div>
-                ${totalPaid > 0 ? `<div class="t-row"><span style="color:#64748b;">Previously Paid:</span> <span style="color:#059669; font-weight:700;">₹${totalPaid.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></div>` : ''}
-                <div class="t-row"><span style="color:#64748b;">${isSettled ? 'Settled in Full:' : 'Net Pending Due:'}</span> <span style="font-weight:800; color:#0f172a;">₹${totalPending.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></div>
-                <div class="t-row t-final">
-                  <span>${isSettled ? 'Net Balance Due:' : 'Total Payable:'}</span>
-                  <span style="${isSettled ? 'color:#059669;' : 'color:#dc2626;'}">${isSettled ? '₹0.00 (PAID)' : '₹' + totalPending.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="footer-sec">
-              <div class="note-text">
-                This is a computer-generated consolidated tax statement / bill of all jobs & vehicles cleared for the above customer. All services inspected and delivered satisfactorily. Thank you for choosing Happy Car Wash!
-              </div>
-              <div class="sign-area">
-                <div class="sign-line"></div>
-                <div class="sign-lbl">Authorized Signatory</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <script>window.onload = function() { window.print(); }</script>
-      </body>
-    </html>
-  `);
+  win.document.write(html);
   win.document.close();
 }
 
@@ -976,38 +863,53 @@ function ConsolidatedSettlementModal({
   const handleSettleAndPrint = async () => {
     try {
       setSaving(true);
-      const jobCardIds = client.documents.filter((d: any) => d.job_card_id).map((d: any) => d.job_card_id);
-      const estimateIds = client.documents.filter((d: any) => d.estimate_id).map((d: any) => d.estimate_id);
-
-      const res = await api.post('/customer-payments/bulk-clear-pending', {
-        job_card_ids: jobCardIds,
-        estimate_ids: estimateIds,
-        customer_name: client.clientName,
-        payment_mode: paymentMode,
-        payment_date: paymentDate,
-        remarks: remarks.trim() || `Consolidated settlement for ${client.clientName}`
-      });
-
-      showToast(
-        res.data.message ||
-          `Cleared ${res.data.cleared_count} bills totaling ₹${client.totalPending.toLocaleString('en-IN')}`,
-        'success'
+      const divisionGroups = groupDocsByDivision(client.documents);
+      const activeDivisions = (['car_wash', 'detailing', 'accessories'] as DivisionType[]).filter(
+        d => divisionGroups[d].documents.length > 0
       );
 
-      // Print Consolidated Bill Sheet
-      printConsolidatedBillSheet({
-        clientName: client.clientName,
-        phone: client.phone,
-        vehicles: client.vehicles,
-        documents: client.documents,
-        totalBilled: client.totalBilled,
-        totalPaid: client.totalPaid + client.totalPending,
-        totalPending: client.totalPending,
-        paymentMode: paymentMode,
-        paymentDate: paymentDate,
-        receiptNo: `HCW-CSL-${Date.now().toString().slice(-6)}`,
-        isSettled: true
-      });
+      let totalClearedCount = 0;
+      let totalAmountCleared = 0;
+
+      for (const divKey of activeDivisions) {
+        const divGrp = divisionGroups[divKey];
+        const jobCardIds = divGrp.documents.filter((d: any) => d.job_card_id).map((d: any) => d.job_card_id);
+        const estimateIds = divGrp.documents.filter((d: any) => d.estimate_id).map((d: any) => d.estimate_id);
+
+        if (jobCardIds.length > 0 || estimateIds.length > 0) {
+          const res = await api.post('/customer-payments/bulk-clear-pending', {
+            job_card_ids: jobCardIds,
+            estimate_ids: estimateIds,
+            customer_name: client.clientName,
+            payment_mode: paymentMode,
+            payment_date: paymentDate,
+            remarks: `${remarks.trim() || `Consolidated settlement for ${client.clientName}`} [${divGrp.label}]`
+          });
+          totalClearedCount += res.data?.cleared_count || (jobCardIds.length + estimateIds.length);
+          totalAmountCleared += divGrp.totalPending;
+        }
+
+        // Print settlement bill for this division with that division's bank, QR, and title
+        await printConsolidatedBillSheet({
+          clientName: client.clientName,
+          phone: client.phone,
+          division: divKey,
+          documents: divGrp.documents,
+          totalBilled: divGrp.totalBilled,
+          totalPaid: divGrp.totalBilled,
+          totalPending: divGrp.totalPending,
+          paymentMode: paymentMode,
+          paymentDate: paymentDate,
+          receiptNo: generateStatementNumber(divKey).replace('STMT', 'CSL'),
+          isSettled: true,
+          remarks: remarks.trim()
+        });
+      }
+
+      showToast(
+        `Cleared ${totalClearedCount} bills across ${activeDivisions.length} division(s) totaling ₹${totalAmountCleared.toLocaleString('en-IN')}`,
+        'success'
+      );
 
       onSettled();
       onClose();
@@ -1018,20 +920,28 @@ function ConsolidatedSettlementModal({
     }
   };
 
-  const handlePrintStatementOnly = () => {
-    printConsolidatedBillSheet({
-      clientName: client.clientName,
-      phone: client.phone,
-      vehicles: client.vehicles,
-      documents: client.documents,
-      totalBilled: client.totalBilled,
-      totalPaid: client.totalPaid,
-      totalPending: client.totalPending,
-      paymentMode: paymentMode,
-      paymentDate: paymentDate,
-      receiptNo: `HCW-STMT-${Date.now().toString().slice(-6)}`,
-      isSettled: false
-    });
+  const handlePrintStatementOnly = async () => {
+    const divisionGroups = groupDocsByDivision(client.documents);
+    const activeDivisions = (['car_wash', 'detailing', 'accessories'] as DivisionType[]).filter(
+      d => divisionGroups[d].documents.length > 0
+    );
+
+    for (const divKey of activeDivisions) {
+      const divGrp = divisionGroups[divKey];
+      await printConsolidatedBillSheet({
+        clientName: client.clientName,
+        phone: client.phone,
+        division: divKey,
+        documents: divGrp.documents,
+        totalBilled: divGrp.totalBilled,
+        totalPaid: divGrp.totalPaid,
+        totalPending: divGrp.totalPending,
+        paymentMode: paymentMode,
+        paymentDate: paymentDate,
+        isSettled: false,
+        remarks: remarks.trim()
+      });
+    }
   };
 
   return (
@@ -1079,7 +989,7 @@ function ConsolidatedSettlementModal({
               {client.documents.length} Unpaid Jobs
             </span>
             <span className="text-[11px] text-stone-500 font-semibold">
-              {client.vehicles.map((v: any) => v.reg_no).join(', ')}
+              {client.vehicles.length} vehicle(s) · {client.vehicles.slice(0, 3).map((v: any) => v.reg_no).join(', ')}{client.vehicles.length > 3 ? ` +${client.vehicles.length - 3} more` : ''}
             </span>
           </div>
         </div>
@@ -1340,10 +1250,14 @@ function HappyPaymentBillModal({ paymentId, onClose, onPaymentUpdated }: HappyPa
   const divisionConfig = useMemo(() => {
     const servicesNames = editServices?.map(s => s.service_name).join(' ') || '';
     const combinedService = `${billData?.service_type || ''} ${servicesNames} ${billData?.remarks || ''}`.trim();
-    const isWash = /delux|dlx|teflon|taflon/i.test(combinedService);
-    const targetComp = isWash ? 'Car Wash' : billData?.company;
-    const targetQuick = isWash ? 1 : billData?.is_quick_job;
-    return getDivisionConfig(targetComp, targetQuick, billData?.job_no || billData?.estimate_no, combinedService);
+    return getDivisionConfig({
+      company: billData?.company,
+      is_quick_job: billData?.is_quick_job,
+      job_no: billData?.job_no || billData?.estimate_no,
+      service_type: combinedService,
+      record_source: billData?.record_source,
+      accessory_sale_id: billData?.accessory_sale_id
+    });
   }, [billData, editServices]);
 
   useEffect(() => {
@@ -1400,250 +1314,33 @@ function HappyPaymentBillModal({ paymentId, onClose, onPaymentUpdated }: HappyPa
           amount: parseFloat(String(billData.amount || 0)) || 0
         }];
 
-    const totalQty = servicesList.reduce((acc: number, it: any) => acc + (parseFloat(it.qty) || 1), 0);
     const subTotal = servicesList.reduce((acc: number, it: any) => acc + (parseFloat(it.amount) || 0), 0);
     const totalBilled = parseFloat(String(billData.total_billed || billData.amount || subTotal)) || subTotal;
     const paidAmount = parseFloat(String(billData.amount || 0)) || 0;
     const balanceDue = parseFloat(String(billData.balance_due || 0)) || 0;
 
-    const itemsRowsHtml = servicesList.map((svc: any, idx: number) => `
-      <tr style="font-size: 10.5px; min-height: 24px;">
-        <td style="padding: 6px 6px; text-align: center; border-right: 1.5px solid #222; vertical-align: top;">${idx + 1}</td>
-        <td style="padding: 6px 8px; border-right: 1.5px solid #222; font-weight: 600; vertical-align: top;">${svc.name}</td>
-        <td style="padding: 6px 6px; text-align: center; border-right: 1.5px solid #222; vertical-align: top;">${svc.hsn_sac || '—'}</td>
-        <td style="padding: 6px 6px; text-align: center; border-right: 1.5px solid #222; vertical-align: top;">${svc.qty}</td>
-        <td style="padding: 6px 6px; text-align: center; border-right: 1.5px solid #222; vertical-align: top;">${svc.unit || 'Pcs'}</td>
-        <td style="padding: 6px 8px; text-align: right; border-right: 1.5px solid #222; vertical-align: top;">${fmtCurrency(svc.rate)}</td>
-        <td style="padding: 6px 8px; text-align: right; font-weight: 600; vertical-align: top;">${fmtCurrency(svc.amount)}</td>
-      </tr>
-    `).join('');
+    const html = renderDivisionBillHtml(divisionConfig, {
+      mode: 'single',
+      billTitle: 'Retail Invoice',
+      docNo: billNo,
+      dateStr: dateStr,
+      customerName: customerName,
+      customerAddress: customerAddress,
+      customerMobile: customerMobile,
+      customerGstin: billData.customer_gstin,
+      carName: carName,
+      regNo: regNo,
+      servicesList: servicesList,
+      totalBilled: totalBilled,
+      paidAmount: paidAmount,
+      balanceDue: balanceDue,
+      paymentMode: billData.payment_mode || 'Cash',
+      transactionId: billData.transaction_id,
+      remarks: billData.remarks,
+      activeQr: activeQr
+    });
 
-    const emptyRowsCount = Math.max(0, 4 - servicesList.length);
-    const spacerRowHtml = emptyRowsCount > 0 ? `
-      <tr style="height: ${emptyRowsCount * 26}px;">
-        <td style="border-right: 1.5px solid #222;"></td>
-        <td style="border-right: 1.5px solid #222;"></td>
-        <td style="border-right: 1.5px solid #222;"></td>
-        <td style="border-right: 1.5px solid #222;"></td>
-        <td style="border-right: 1.5px solid #222;"></td>
-        <td style="border-right: 1.5px solid #222;"></td>
-        <td></td>
-      </tr>
-    ` : '';
-
-    win.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>${divisionConfig.title} - ${billNo}</title>
-          <style>
-            @page { size: A4 portrait; margin: 10mm 12mm; }
-            * { box-sizing: border-box; }
-            body { font-family: 'Segoe UI', Arial, sans-serif; color: #000; margin: 0; padding: 12px; background: #fff; font-size: 11px; line-height: 1.4; }
-            .invoice-box { background: #fff; border: 1.5px solid #222; max-width: 800px; margin: 0 auto; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-            @media print {
-              body { padding: 0; background: #fff; }
-              .invoice-box { border: 1.5px solid #222; box-shadow: none; max-width: 100%; }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="invoice-box">
-            <!-- Top title -->
-            <div style="text-align: center; font-size: 11px; font-weight: 700; padding: 6px 0 2px 0; letter-spacing: 0.5px;">
-              Retail Invoice
-            </div>
-
-            <!-- Header: Logo + Company Info -->
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; padding: 6px 14px 10px 14px; border-bottom: 1.5px solid #222;">
-              <div style="width: 68px; height: 68px; background: #000; border: 1px solid #333; display: flex; align-items: center; justify-content: center;">
-                <img src="/happy-logo.png" alt="Logo" style="max-width: 64px; max-height: 64px; object-fit: contain;" onerror="this.style.display='none';" />
-              </div>
-              <div style="text-align: right;">
-                <h1 style="margin: 0; font-size: 18px; font-weight: 900; letter-spacing: 0.5px; font-family: serif;">
-                  ${divisionConfig.title}
-                </h1>
-                ${divisionConfig.addressLines.map((line: string) => `<p style="margin: 0; font-size: 10px; line-height: 1.35; color: #222;">${line}</p>`).join('')}
-                <p style="margin: 0; font-size: 10px; line-height: 1.35; color: #222;">${divisionConfig.contactLine}</p>
-                <p style="margin: 0; font-size: 10px; line-height: 1.35; color: #222;">${divisionConfig.stateLine}</p>
-              </div>
-            </div>
-
-            <!-- Bill To & Invoice Details Bar -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr;">
-              <!-- Left: Bill To -->
-              <div style="border-right: 1.5px solid #222; border-bottom: 1.5px solid #222;">
-                <div style="background: #E04E1D; color: #fff; font-weight: 700; font-size: 11px; padding: 3px 10px;">
-                  Bill To
-                </div>
-                <div style="padding: 8px 10px; min-height: 75px; font-size: 10.5px; line-height: 1.4;">
-                  <p style="margin: 0 0 2px 0; font-weight: bold; font-size: 11px; text-transform: uppercase;">
-                    ${customerName}
-                  </p>
-                  ${customerAddress ? `<p style="margin: 0 0 2px 0; color: #222; text-transform: uppercase;">${customerAddress}</p>` : ''}
-                  ${customerMobile ? `<p style="margin: 0; color: #333;">Phone: ${customerMobile}</p>` : ''}
-                  ${billData.customer_gstin ? `<p style="margin: 0; color: #333;">GSTIN: ${billData.customer_gstin}</p>` : ''}
-                </div>
-              </div>
-
-              <!-- Right: Invoice Details -->
-              <div style="border-bottom: 1.5px solid #222;">
-                <div style="background: #E04E1D; color: #fff; font-weight: 700; font-size: 11px; padding: 3px 10px;">
-                  Invoice Details
-                </div>
-                <div style="padding: 8px 10px; min-height: 75px; font-size: 10.5px; line-height: 1.5;">
-                  <div style="display: flex; justify-content: space-between;">
-                    <span style="color: #222;">Invoice No.:</span>
-                    <span style="font-weight: bold;">${billNo}</span>
-                  </div>
-                  <div style="display: flex; justify-content: space-between;">
-                    <span style="color: #222;">Date:</span>
-                    <span>${dateStr}</span>
-                  </div>
-                  <div style="display: flex; justify-content: space-between;">
-                    <span style="color: #222;">Car Name:</span>
-                    <span style="font-weight: bold;">${carName}</span>
-                  </div>
-                  <div style="display: flex; justify-content: space-between;">
-                    <span style="color: #222;">Reg No.:</span>
-                    <span style="font-weight: bold; font-family: monospace;">${regNo}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Items Table -->
-            <table style="width: 100%; border-collapse: collapse; text-align: left;">
-              <thead>
-                <tr style="background: #E04E1D; color: #fff; font-size: 10.5px; font-weight: 700;">
-                  <th style="padding: 4px 6px; text-align: center; width: 35px; border-right: 1px solid #ff8860;">#</th>
-                  <th style="padding: 4px 8px; border-right: 1px solid #ff8860;">Item name</th>
-                  <th style="padding: 4px 6px; text-align: center; width: 75px; border-right: 1px solid #ff8860;">HSN/ SAC</th>
-                  <th style="padding: 4px 6px; text-align: center; width: 60px; border-right: 1px solid #ff8860;">Quantity</th>
-                  <th style="padding: 4px 6px; text-align: center; width: 50px; border-right: 1px solid #ff8860;">Unit</th>
-                  <th style="padding: 4px 8px; text-align: right; width: 90px; border-right: 1px solid #ff8860;">Price/ Unit</th>
-                  <th style="padding: 4px 8px; text-align: right; width: 100px;">Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${itemsRowsHtml}
-                ${spacerRowHtml}
-              </tbody>
-              <tfoot>
-                <tr style="border-top: 1.5px solid #222; border-bottom: 1.5px solid #222; font-weight: 700; font-size: 11px;">
-                  <td style="padding: 5px 6px; border-right: 1.5px solid #222;"></td>
-                  <td style="padding: 5px 8px; border-right: 1.5px solid #222;">Total</td>
-                  <td style="padding: 5px 6px; border-right: 1.5px solid #222;"></td>
-                  <td style="padding: 5px 6px; text-align: center; border-right: 1.5px solid #222;">${totalQty}</td>
-                  <td style="padding: 5px 6px; border-right: 1.5px solid #222;"></td>
-                  <td style="padding: 5px 8px; border-right: 1.5px solid #222;"></td>
-                  <td style="padding: 5px 8px; text-align: right;">${fmtCurrency(subTotal)}</td>
-                </tr>
-              </tfoot>
-            </table>
-
-            <!-- Amount in words & Amounts breakdown -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr;">
-              <!-- Left: Invoice Amount In Words -->
-              <div style="border-right: 1.5px solid #222; border-bottom: 1.5px solid #222;">
-                <div style="background: #E04E1D; color: #fff; font-weight: 700; font-size: 11px; padding: 3px 10px;">
-                  Invoice Amount In Words
-                </div>
-                <div style="padding: 10px; min-height: 85px; font-size: 11px; color: #111;">
-                  <div style="font-style: italic; font-weight: 600;">${numberToWords(Math.round(totalBilled))}</div>
-                  <div style="margin-top: 8px; font-size: 9.5px; color: #555;">
-                    <strong>Payment Mode:</strong> <span style="text-transform: uppercase; font-weight: bold; color: #000;">${billData.payment_mode || 'Cash'}</span>
-                    ${billData.transaction_id ? ` &nbsp;•&nbsp; <strong>Ref/Txn:</strong> <span style="font-family: monospace;">${billData.transaction_id}</span>` : ''}
-                  </div>
-                  ${billData.remarks ? `<div style="margin-top: 3px; font-size: 9.5px; color: #555;"><strong>Remarks:</strong> ${billData.remarks}</div>` : ''}
-                </div>
-              </div>
-
-              <!-- Right: Amounts breakdown -->
-              <div style="border-bottom: 1.5px solid #222;">
-                <div style="background: #E04E1D; color: #fff; font-weight: 700; font-size: 11px; padding: 3px 10px;">
-                  Amounts
-                </div>
-                <div style="padding: 0; font-size: 10.5px;">
-                  <table style="width: 100%; border-collapse: collapse;">
-                    <tbody>
-                      <tr style="border-bottom: 1px solid #e5e5e5;">
-                        <td style="padding: 4px 10px; color: #333;">Sub Total</td>
-                        <td style="padding: 4px 10px; text-align: right; font-weight: 600;">${fmtCurrency(subTotal)}</td>
-                      </tr>
-                      <tr style="border-bottom: 1px solid #e5e5e5;">
-                        <td style="padding: 4px 10px; font-weight: 700;">Total</td>
-                        <td style="padding: 4px 10px; text-align: right; font-weight: 700;">${fmtCurrency(totalBilled)}</td>
-                      </tr>
-                      <tr style="border-bottom: 1px solid #e5e5e5;">
-                        <td style="padding: 4px 10px; color: #333;">Received</td>
-                        <td style="padding: 4px 10px; text-align: right; font-weight: 700; color: #047857;">${fmtCurrency(paidAmount)}</td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 5px 10px; font-weight: 700; color: #111;">Balance</td>
-                        <td style="padding: 5px 10px; text-align: right; font-weight: 700; color: ${balanceDue > 0 ? '#b91c1c' : '#047857'};">${fmtCurrency(balanceDue)}${balanceDue <= 0 ? ' (Settled)' : ''}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-
-            <!-- Bank Details & Terms section -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr;">
-              <!-- Left: Bank Details with Dynamic QR -->
-              <div style="border-right: 1.5px solid #222;">
-                <div style="background: #E04E1D; color: #fff; font-weight: 700; font-size: 11px; padding: 3px 10px;">
-                  Bank Details
-                </div>
-                <div style="padding: 10px; display: flex; gap: 12px; align-items: center;">
-                  <div style="text-align: center; flex-shrink: 0;">
-                    ${activeQr ? `<img src="${activeQr}" alt="UPI QR Code" style="width: 85px; height: 85px; display: block; border: 1px solid #ccc;" />` : ''}
-                    <div style="margin-top: 3px; border: 1px solid #059669; border-radius: 2px; padding: 1px 3px; font-size: 7.5px; font-weight: 800; color: #047857; display: flex; align-items: center; justify-content: center; gap: 2px;">
-                      <span style="background: #047857; color: #fff; padding: 0 2px; border-radius: 1px; font-size: 6.5px;">UPI</span>
-                      <span>SCAN TO PAY</span>
-                    </div>
-                  </div>
-                  <div style="font-size: 9.5px; line-height: 1.45; color: #111;">
-                    <p style="margin: 0 0 2px 0;"><strong>Name:</strong> ${divisionConfig.bankName}</p>
-                    <p style="margin: 0 0 2px 0;"><strong>Account No.:</strong> ${divisionConfig.accountNo}</p>
-                    <p style="margin: 0 0 2px 0;"><strong>IFSC code:</strong> ${divisionConfig.ifsc}</p>
-                    <p style="margin: 0;"><strong>Account Holder's Name:</strong> ${divisionConfig.accountHolder}</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Right: Terms and conditions -->
-              <div>
-                <div style="background: #E04E1D; color: #fff; font-weight: 700; font-size: 11px; padding: 3px 10px;">
-                  Terms and conditions
-                </div>
-                <div style="padding: 10px 12px; font-size: 9px; line-height: 1.45; color: #222;">
-                  <p style="margin: 0 0 3px 0;">1) Please do not left anything in car companies not responsible for any loss or damage.</p>
-                  <p style="margin: 0 0 3px 0;">2) Please take the car on the same day.</p>
-                  <p style="margin: 0 0 3px 0;">3) On the event loss of job card car would be delivered only after sufficient verifications.</p>
-                  <p style="margin: 0;">4) Company is not responsible for any technical and mechanical faults.</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Footer Signature -->
-            <div style="display: flex; justify-content: flex-end; padding: 12px 16px 8px 16px; border-top: 1.5px solid #222;">
-              <div style="text-align: center; min-width: 170px;">
-                <div style="height: 30px;"></div>
-                <div style="border-top: 1px solid #111; padding-top: 2px; font-weight: 700; font-size: 10px;">Authorized Signatory</div>
-                <div style="font-size: 8.5px; color: #555;">For ${divisionConfig.title}</div>
-              </div>
-            </div>
-          </div>
-          <script>
-            window.onload = function() {
-              setTimeout(function() { window.print(); }, 250);
-            }
-          </script>
-        </body>
-      </html>
-    `);
+    win.document.write(html);
     win.document.close();
   };
 
@@ -2534,6 +2231,148 @@ function HappyPaymentBillModal({ paymentId, onClose, onPaymentUpdated }: HappyPa
   );
 }
 
+function StatementPrintDropdown({
+  clientName,
+  phone,
+  documents = [],
+  menuId,
+  activeMenu,
+  setActiveMenu,
+  buttonClassName,
+  buttonLabel = 'Statement',
+  align = 'right'
+}: {
+  clientName: string;
+  phone?: string;
+  documents: any[];
+  menuId: string;
+  activeMenu: string | null;
+  setActiveMenu: React.Dispatch<React.SetStateAction<string | null>>;
+  buttonClassName?: string;
+  buttonLabel?: string;
+  align?: 'right' | 'left';
+}) {
+  const divGroups = useMemo(() => groupDocsByDivision(documents), [documents]);
+  const activeDivs = (['car_wash', 'detailing', 'accessories'] as DivisionType[]).filter(
+    d => divGroups[d].documents.length > 0
+  );
+
+  if (activeDivs.length === 0) return null;
+
+  const defaultBtnClass =
+    'px-2.5 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs rounded-xl flex items-center gap-1 transition-all cursor-pointer';
+
+  return (
+    <div className="relative inline-block text-left">
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          if (activeDivs.length === 1) {
+            const d = activeDivs[0];
+            printConsolidatedBillSheet({
+              clientName,
+              phone,
+              division: d,
+              documents: divGroups[d].documents,
+              totalBilled: divGroups[d].totalBilled,
+              totalPaid: divGroups[d].totalPaid,
+              totalPending: divGroups[d].totalPending
+            });
+          } else {
+            setActiveMenu((prev) => (prev === menuId ? null : menuId));
+          }
+        }}
+        className={buttonClassName || defaultBtnClass}
+        title="Print statement of pending jobs"
+      >
+        <span className="material-symbols-outlined text-base">print</span>
+        {buttonLabel}
+        {activeDivs.length > 1 && (
+          <span className="material-symbols-outlined text-sm">arrow_drop_down</span>
+        )}
+      </button>
+
+      {activeMenu === menuId && activeDivs.length > 1 && (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          className={`absolute ${align === 'left' ? 'left-0' : 'right-0'} top-full mt-1.5 w-64 bg-white rounded-2xl shadow-2xl border border-stone-200 p-2 z-50 animate-in fade-in zoom-in-95 duration-150`}
+        >
+          <div className="text-[10px] font-extrabold uppercase tracking-wider text-stone-400 px-2.5 py-1">
+            Print Division Statement
+          </div>
+          {activeDivs.map((divKey) => {
+            const dGrp = divGroups[divKey];
+            const icon =
+              divKey === 'car_wash'
+                ? 'local_car_wash'
+                : divKey === 'accessories'
+                ? 'shopping_bag'
+                : 'auto_awesome';
+            const iconColor =
+              divKey === 'car_wash'
+                ? 'text-sky-600'
+                : divKey === 'accessories'
+                ? 'text-purple-600'
+                : 'text-amber-600';
+            return (
+              <button
+                key={divKey}
+                type="button"
+                onClick={() => {
+                  setActiveMenu(null);
+                  printConsolidatedBillSheet({
+                    clientName,
+                    phone,
+                    division: divKey,
+                    documents: dGrp.documents,
+                    totalBilled: dGrp.totalBilled,
+                    totalPaid: dGrp.totalPaid,
+                    totalPending: dGrp.totalPending
+                  });
+                }}
+                className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-stone-100 flex items-center justify-between transition-colors cursor-pointer text-xs"
+              >
+                <span className="flex items-center gap-2 font-bold text-stone-800">
+                  <span className={`material-symbols-outlined text-base ${iconColor}`}>{icon}</span>
+                  {dGrp.label}
+                </span>
+                <span className="text-[10.5px] font-mono font-bold px-1.5 py-0.5 bg-stone-100 rounded text-stone-600">
+                  {dGrp.documents.length} bills · ₹{Math.round(dGrp.totalPending).toLocaleString('en-IN')}
+                </span>
+              </button>
+            );
+          })}
+          <div className="border-t border-stone-100 mt-1 pt-1">
+            <button
+              type="button"
+              onClick={async () => {
+                setActiveMenu(null);
+                for (const divKey of activeDivs) {
+                  const dGrp = divGroups[divKey];
+                  await printConsolidatedBillSheet({
+                    clientName,
+                    phone,
+                    division: divKey,
+                    documents: dGrp.documents,
+                    totalBilled: dGrp.totalBilled,
+                    totalPaid: dGrp.totalPaid,
+                    totalPending: dGrp.totalPending
+                  });
+                }
+              }}
+              className="w-full text-left px-2.5 py-2 rounded-xl hover:bg-amber-50 text-amber-900 font-extrabold flex items-center gap-2 transition-colors cursor-pointer text-xs"
+            >
+              <span className="material-symbols-outlined text-base text-amber-600">print_connect</span>
+              All Divisions ({activeDivs.length} statements)
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function CustomerPayments({ defaultView }: { defaultView?: 'history' | 'outstanding' }) {
   const { isLocked } = useKillSwitchLock('customer_payments');
   const navigate = useNavigate();
@@ -2584,6 +2423,13 @@ export default function CustomerPayments({ defaultView }: { defaultView?: 'histo
   const [consolidatedModalClient, setConsolidatedModalClient] = useState<any>(null);
   const [selectedBillPaymentId, setSelectedBillPaymentId] = useState<number | null>(null);
   const [showBillModal, setShowBillModal] = useState(false);
+  const [activeStatementMenu, setActiveStatementMenu] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = () => setActiveStatementMenu(null);
+    window.addEventListener('click', handleClickOutside);
+    return () => window.removeEventListener('click', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     setViewMode(resolveView());
@@ -2591,35 +2437,9 @@ export default function CustomerPayments({ defaultView }: { defaultView?: 'histo
 
   const activeData = viewMode === 'history' ? payments : outstandingList;
 
-  const isItemWash = (item: any) => {
-    const comp = (item.company || '').toLowerCase();
-    const jobNo = (item.job_no || item.doc_no || '').toUpperCase();
-    const svc = `${item.service_type || ''} ${item.remarks || ''} ${item.services_json || ''}`.toLowerCase();
-    return Boolean(
-      item.is_quick_job === 1 ||
-      item.is_quick_job === true ||
-      comp === 'car wash' ||
-      comp === 'happy car wash' ||
-      jobNo.startsWith('CW-') ||
-      jobNo.startsWith('WASH-') ||
-      /delux|dlx|teflon|taflon|wash/i.test(svc)
-    );
-  };
-
-  const isItemAcc = (item: any) => {
-    const comp = (item.company || '').toLowerCase();
-    const jobNo = (item.job_no || item.doc_no || '').toUpperCase();
-    return Boolean(
-      item.record_source === 'product_sale' ||
-      Boolean(item.accessory_sale_id) ||
-      comp.includes('accessories') ||
-      comp.includes('product') ||
-      jobNo.startsWith('ACC-') ||
-      jobNo.startsWith('PROD-')
-    );
-  };
-
-  const isItemDetailing = (item: any) => !isItemWash(item) && !isItemAcc(item);
+  const isItemWash = (item: any) => resolveDivision(item) === 'car_wash';
+  const isItemAcc = (item: any) => resolveDivision(item) === 'accessories';
+  const isItemDetailing = (item: any) => resolveDivision(item) === 'detailing';
 
   const customerMap = activeData.reduce((map: Map<string, { count: number; vehicles: Set<string> }>, item: any) => {
     const name = (item.owner_name || item.customer_name || '').trim();
@@ -3484,31 +3304,15 @@ export default function CustomerPayments({ defaultView }: { defaultView?: 'histo
                                 Clear All & Single Bill
                               </button>
 
-                              {/* Print Statement CTA */}
-                              <button
-                                type="button"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  printConsolidatedBillSheet({
-                                    clientName: grp.clientName,
-                                    phone: grp.phone,
-                                    vehicles: grp.vehicles,
-                                    documents: grp.documents,
-                                    totalBilled: grp.totalBilled,
-                                    totalPaid: grp.totalPaid,
-                                    totalPending: grp.totalPending,
-                                    paymentMode: 'Pending Statement',
-                                    paymentDate: new Date().toISOString().slice(0, 10),
-                                    receiptNo: `HCW-STMT-${Date.now().toString().slice(-6)}`,
-                                    isSettled: false
-                                  });
-                                }}
-                                className="px-2.5 py-2.5 bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold text-xs rounded-xl flex items-center gap-1 transition-all cursor-pointer"
-                                title="Print single-sheet statement of all pending jobs"
-                              >
-                                <span className="material-symbols-outlined text-base">print</span>
-                                Statement
-                              </button>
+                              {/* Division-aware Print Statement Menu */}
+                              <StatementPrintDropdown
+                                clientName={grp.clientName}
+                                phone={grp.phone}
+                                documents={grp.documents}
+                                menuId={`card-${grp.clientName}`}
+                                activeMenu={activeStatementMenu}
+                                setActiveMenu={setActiveStatementMenu}
+                              />
 
                               {/* Quick Register Payment CTA */}
                               <button
@@ -3560,27 +3364,16 @@ export default function CustomerPayments({ defaultView }: { defaultView?: 'histo
                                       <span className="material-symbols-outlined text-sm">receipt_long</span>
                                       Clear All & Single Bill ({grp.documents.length})
                                     </button>
-                                    <button
-                                      type="button"
-                                      onClick={() => printConsolidatedBillSheet({
-                                        clientName: grp.clientName,
-                                        phone: grp.phone,
-                                        vehicles: grp.vehicles,
-                                        documents: grp.documents,
-                                        totalBilled: grp.totalBilled,
-                                        totalPaid: grp.totalPaid,
-                                        totalPending: grp.totalPending,
-                                        paymentMode: 'Pending Statement',
-                                        paymentDate: new Date().toISOString().slice(0, 10),
-                                        receiptNo: `HCW-STMT-${Date.now().toString().slice(-6)}`,
-                                        isSettled: false
-                                      })}
-                                      className="px-2.5 py-1.5 bg-stone-200 hover:bg-stone-300 text-stone-800 text-xs font-bold rounded-lg flex items-center gap-1 transition-colors cursor-pointer"
-                                      title="Print consolidated statement of dues"
-                                    >
-                                      <span className="material-symbols-outlined text-sm">print</span>
-                                      Print Statement
-                                    </button>
+                                    <StatementPrintDropdown
+                                      clientName={grp.clientName}
+                                      phone={grp.phone}
+                                      documents={grp.documents}
+                                      menuId={`expanded-${grp.clientName}`}
+                                      activeMenu={activeStatementMenu}
+                                      setActiveMenu={setActiveStatementMenu}
+                                      buttonLabel="Print Statement"
+                                      buttonClassName="px-2.5 py-1.5 bg-stone-200 hover:bg-stone-300 text-stone-800 text-xs font-bold rounded-lg flex items-center gap-1 transition-colors cursor-pointer"
+                                    />
                                   </div>
                                 </div>
 
@@ -3725,27 +3518,17 @@ export default function CustomerPayments({ defaultView }: { defaultView?: 'histo
                             <span className="material-symbols-outlined text-sm">task_alt</span>
                             Clear All & Single Bill
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => printConsolidatedBillSheet({
-                              clientName: matchedGrp.clientName,
-                              phone: matchedGrp.phone,
-                              vehicles: matchedGrp.vehicles,
-                              documents: matchedGrp.documents,
-                              totalBilled: matchedGrp.totalBilled,
-                              totalPaid: matchedGrp.totalPaid,
-                              totalPending: matchedGrp.totalPending,
-                              paymentMode: 'Pending Statement',
-                              paymentDate: new Date().toISOString().slice(0, 10),
-                              receiptNo: `HCW-STMT-${Date.now().toString().slice(-6)}`,
-                              isSettled: false
-                            })}
-                            className="bg-white hover:bg-stone-100 text-stone-700 border border-stone-200 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors"
-                            title="Print statement for this customer"
-                          >
-                            <span className="material-symbols-outlined text-sm">print</span>
-                            Print Statement
-                          </button>
+                          <StatementPrintDropdown
+                            clientName={matchedGrp.clientName}
+                            phone={matchedGrp.phone}
+                            documents={matchedGrp.documents}
+                            menuId={`matched-${matchedGrp.clientName}`}
+                            activeMenu={activeStatementMenu}
+                            setActiveMenu={setActiveStatementMenu}
+                            buttonLabel="Print Statement"
+                            buttonClassName="bg-white hover:bg-stone-100 text-stone-700 border border-stone-200 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                            align="left"
+                          />
                         </div>
                       </div>
                     );
