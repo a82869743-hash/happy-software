@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import api from '../api/axios';
 import AnimatedPage from '../components/shared/AnimatedPage';
 import { showToast } from '../components/shared/Toast';
+import SuggestInput, { recordFieldSuggestions, type LinkedSuggestionData } from '../components/shared/SuggestInput';
 
 export const JOB_CATEGORY_PRESETS = [
   'Engine Oil Change',
@@ -45,9 +46,7 @@ export default function JobCardNew() {
   const [jobDate, setJobDate] = useState(new Date().toISOString().slice(0, 10));
   const [paymentType, setPaymentType] = useState<'cash' | 'credit'>('cash');
 
-  // Car Name suggestions state
-  const [carNameSuggestions, setCarNameSuggestions] = useState<string[]>([]);
-  const [showCarNameSuggestions, setShowCarNameSuggestions] = useState(false);
+
 
   // Customer state
   const [custType, setCustType] = useState<'individual' | 'corporate' | 'fleet'>('individual');
@@ -81,67 +80,12 @@ export default function JobCardNew() {
     approved_amount: '',
   });
 
-  // Autocomplete / Connected search
-  const [suggestions, setSuggestions] = useState<any[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [activeField, setActiveField] = useState<'regNo' | 'ownerName' | 'mobile' | null>(null);
-
-  // Global suggestions state
-  const [globalSuggestions, setGlobalSuggestions] = useState<Record<string, string[]>>({});
-
-  const loadSuggestions = async (type: string) => {
-    try {
-      const res = await api.get(`/job-cards/suggestions/list?type=${type}`);
-      setGlobalSuggestions(prev => ({ ...prev, [type]: res.data.data || [] }));
-    } catch {
-      // Ignore suggestion load errors
-    }
-  };
-
-  const recordSuggestion = async (type: string, text: string) => {
-    if (!text || !text.trim()) return;
-    try {
-      await api.post('/job-cards/suggestions/record', { type, text: text.trim() });
-      loadSuggestions(type);
-    } catch {
-      // Ignore suggestion recording errors
-    }
-  };
-
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    const types = [
-      'car_name', 'client_name', 'mobile_no', 'alt_mobile', 'email', 'pincode',
-      'address_line', 'colony_street', 'city', 'state', 'company_name', 'gstin'
-    ];
-    types.forEach(t => loadSuggestions(t));
   }, []);
 
-  // Search car name suggestions when user types initials
-  const handleCarNameChange = async (val: string) => {
+  const handleCarNameChange = (val: string) => {
     handleVehicleField('car_name', val);
-    if (!val || val.trim().length < 1) {
-      setCarNameSuggestions([]);
-      setShowCarNameSuggestions(false);
-      return;
-    }
-    try {
-      const res = await api.get('/job-cards/suggestions/list', {
-        params: { type: 'car_name', q: val.trim() }
-      });
-      setCarNameSuggestions(res.data.data || []);
-      setShowCarNameSuggestions(true);
-    } catch {
-      setCarNameSuggestions([]);
-      setShowCarNameSuggestions(false);
-    }
-  };
-
-  const handleSelectCarName = (name: string) => {
-    handleVehicleField('car_name', name);
-    setShowCarNameSuggestions(false);
-    setCarNameSuggestions([]);
-    recordSuggestion('car_name', name);
   };
 
   // Vehicle lookup
@@ -246,84 +190,33 @@ export default function JobCardNew() {
            cleanMobile.length === 10;
   };
 
-  const handleAutocompleteSearch = async (val: string, field: 'regNo' | 'ownerName' | 'mobile') => {
-    setActiveField(field);
-    if (!val || val.length < 2) {
-      setSuggestions([]);
-      setShowSuggestions(false);
-      return;
-    }
-    try {
-      const res = await api.get('/customers/search-connected', { params: { q: val } });
-      setSuggestions(res.data.data || []);
-      setShowSuggestions(true);
-    } catch (err) {
-      console.error('Connected search error:', err);
-      setSuggestions([]);
+
+
+  const handleRegSelect = (val: string, linked?: LinkedSuggestionData) => {
+    handleVehicleField('reg_no', val);
+    lookupVehicle(val, true);
+    if (linked) {
+      if (!vehicle.car_name && linked.car_name) handleVehicleField('car_name', linked.car_name);
+      if (!customer.customer_name && (linked.client_name || linked.customer_name)) handleCustomerField('customer_name', linked.client_name || linked.customer_name || '');
+      if (!customer.mobile_no && linked.mobile_no) handleCustomerField('mobile_no', linked.mobile_no);
+      if (!customer.address_line && linked.address_line) handleCustomerField('address_line', linked.address_line);
+      if (!customer.city && linked.city) handleCustomerField('city', linked.city);
+      if (!customer.company_name && linked.company_name) handleCustomerField('company_name', linked.company_name);
     }
   };
 
-  const handleSelectAutocomplete = (sug: any) => {
-    if (sug.reg_no) {
-      const carName = sug.car_name || [sug.make, sug.model].filter(Boolean).join(' ') || '';
-      setVehicle(prev => ({
-        ...prev,
-        reg_no: sug.reg_no,
-        car_name: carName || prev.car_name,
-        insurance_expiry: sug.insurance_expiry ? sug.insurance_expiry.slice(0, 10) : '',
-      }));
+  const handleMobileSelect = (_val: string, linked?: LinkedSuggestionData) => {
+    if (linked) {
+      if (!customer.customer_name && (linked.client_name || linked.customer_name)) handleCustomerField('customer_name', linked.client_name || linked.customer_name || '');
+      if (!vehicle.reg_no && linked.reg_no) {
+        handleVehicleField('reg_no', linked.reg_no);
+        lookupVehicle(linked.reg_no, true);
+      }
+      if (!vehicle.car_name && linked.car_name) handleVehicleField('car_name', linked.car_name);
+      if (!customer.address_line && linked.address_line) handleCustomerField('address_line', linked.address_line);
+      if (!customer.city && linked.city) handleCustomerField('city', linked.city);
+      if (!customer.company_name && linked.company_name) handleCustomerField('company_name', linked.company_name);
     }
-    setCustomer(prev => ({
-      ...prev,
-      customer_name: sug.customer_name || '',
-      mobile_no: sug.customer_mobile || sug.mobile_no || '',
-      alt_mobile: sug.alt_mobile || '',
-      email: sug.customer_email || sug.email || '',
-      company_name: sug.company_name || '',
-      gstin: sug.gstin || '',
-      ref_no: sug.ref_no || '',
-      contact_person: sug.contact_person || '',
-      driver_name: sug.driver_name || '',
-      address_line: sug.address_line || '',
-      colony_street: sug.colony_street || '',
-      city: sug.customer_city || sug.city || '',
-      state: sug.customer_state || sug.state || '',
-      state_code: sug.state_code || '',
-      pincode: sug.pincode || '',
-    }));
-    if (sug.customer_type) {
-      setCustType(sug.customer_type);
-    }
-    setExistingCustomerId(sug.customer_id);
-    setLookupDone(true);
-    setSuggestions([]);
-    setShowSuggestions(false);
-    setActiveField(null);
-  };
-
-  const renderAutocompleteDropdown = (field: 'regNo' | 'ownerName' | 'mobile') => {
-    if (!showSuggestions || activeField !== field || suggestions.length === 0) return null;
-    return (
-      <div className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto z-50">
-        {suggestions.map((sug, idx) => (
-          <div
-            key={idx}
-            onMouseDown={() => handleSelectAutocomplete(sug)}
-            className="p-2.5 hover:bg-amber-50 cursor-pointer border-b border-gray-50 last:border-0 text-xs font-medium text-on-surface"
-          >
-            <div className="font-bold text-on-surface flex justify-between">
-              <span>{sug.customer_name}</span>
-              <span className="font-mono text-[10px] text-slate-400">{sug.customer_mobile || sug.mobile_no}</span>
-            </div>
-            {(sug.reg_no || sug.car_name) && (
-              <div className="text-[10px] text-slate-500 mt-0.5">
-                🚗 {sug.reg_no} · {sug.car_name || [sug.make, sug.model].filter(Boolean).join(' ')}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    );
   };
 
   const handleSubmit = async () => {
@@ -364,8 +257,21 @@ export default function JobCardNew() {
         is_quick_job: 0,
       };
 
-      // Record car_name suggestion for future auto-complete
-      recordSuggestion('car_name', cleanCarName);
+      // Record suggestions for future auto-complete (fire and forget)
+      recordFieldSuggestions({
+        reg_no: vehicle.reg_no,
+        car_name: cleanCarName,
+        client_name: customer.customer_name,
+        mobile_no: customer.mobile_no,
+        alt_mobile: customer.alt_mobile,
+        email: customer.email,
+        company_name: customer.company_name,
+        address_line: customer.address_line,
+        colony_street: customer.colony_street,
+        city: customer.city,
+        pincode: customer.pincode,
+        insurance_company: insurance.company
+      });
 
       const res = await api.post('/job-cards', body);
       const jobId = res.data.id;
@@ -383,21 +289,19 @@ export default function JobCardNew() {
     return (
       <div>
         <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">{label}</label>
-        <input
-          type={isMobile ? 'tel' : (opts?.type || 'text')}
+        <SuggestInput
+          type={field}
           value={obj[field] || ''}
-          onChange={(e) => {
-            const val = isMobile ? e.target.value.replace(/\D/g, '').slice(0, 10) : e.target.value;
-            setter(field, val);
+          onChange={(val) => {
+            const nextVal = isMobile ? val.replace(/\D/g, '').slice(0, 10) : val;
+            setter(field, nextVal);
           }}
           onBlur={(e) => {
             opts?.onBlur && opts.onBlur(e.target.value);
-            recordSuggestion(field, e.target.value);
           }}
           maxLength={isMobile ? 10 : undefined}
           placeholder={opts?.placeholder || ''}
           disabled={opts?.disabled}
-          list={opts?.list || `suggestions-${field}`}
           className="w-full bg-white border border-stone-200/90 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 py-3 px-4 font-semibold text-sm text-stone-900 placeholder:text-stone-400 shadow-sm transition-all"
         />
         {field === 'mobile_no' && obj[field] && cleanMobileNo(obj[field]).length !== 10 && (
@@ -515,23 +419,20 @@ export default function JobCardNew() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Registration Number */}
-                <div className="relative">
+                <div>
                   <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">
                     Registration Number <span className="text-rose-500">*</span>
                   </label>
                   <div className="flex gap-2">
-                    <input
-                      type="text"
+                    <SuggestInput
+                      type="reg_no"
                       value={vehicle.reg_no}
                       maxLength={10}
-                      onChange={(e) => {
-                        const val = e.target.value.replace(/[^A-Z0-9]/gi, '').toUpperCase().slice(0, 10);
-                        handleVehicleField('reg_no', val);
-                        handleAutocompleteSearch(val, 'regNo');
+                      onChange={(val) => {
+                        const clean = val.replace(/[^A-Z0-9]/gi, '').toUpperCase().slice(0, 10);
+                        handleVehicleField('reg_no', clean);
                       }}
-                      onFocus={() => {
-                        if (vehicle.reg_no.length >= 2) handleAutocompleteSearch(vehicle.reg_no, 'regNo');
-                      }}
+                      onSelect={handleRegSelect}
                       placeholder="e.g. MH12AB1234"
                       className="w-full bg-white border border-stone-200/90 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 py-3 px-4 font-bold tracking-wider text-base text-stone-900 uppercase placeholder:text-stone-300 shadow-sm transition-all"
                     />
@@ -544,54 +445,22 @@ export default function JobCardNew() {
                       Search
                     </button>
                   </div>
-                  {renderAutocompleteDropdown('regNo')}
                 </div>
 
                 {/* Car Name / Model with Autocomplete & Auto-save */}
-                <div className="relative">
+                <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider">
                       Car Name / Model <span className="text-rose-500">*</span>
                     </label>
                   </div>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={vehicle.car_name}
-                      onChange={(e) => handleCarNameChange(e.target.value)}
-                      onFocus={() => {
-                        if (vehicle.car_name.trim().length >= 1) handleCarNameChange(vehicle.car_name);
-                      }}
-                      onBlur={(e) => {
-                        setTimeout(() => setShowCarNameSuggestions(false), 250);
-                        recordSuggestion('car_name', e.target.value);
-                      }}
-                      placeholder="e.g. MG Hector, Creta, Swift Dzire..."
-                      list="suggestions-car_name"
-                      className="w-full bg-white border border-stone-200/90 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 py-3 px-4 font-semibold text-sm text-stone-900 placeholder:text-stone-400 shadow-sm transition-all"
-                    />
-
-                    {/* Dynamic Auto-complete Suggestions Dropdown */}
-                    {showCarNameSuggestions && carNameSuggestions.length > 0 && (
-                      <div className="absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-56 overflow-y-auto z-50 divide-y divide-slate-100">
-                        {carNameSuggestions.map((name, idx) => (
-                          <div
-                            key={idx}
-                            onMouseDown={() => handleSelectCarName(name)}
-                            className="p-3 hover:bg-amber-50 cursor-pointer text-xs font-bold text-slate-800 flex items-center justify-between transition-colors"
-                          >
-                            <span className="flex items-center gap-2">
-                              <span className="material-symbols-outlined text-amber-600 text-sm">directions_car</span>
-                              {name}
-                            </span>
-                            <span className="text-[9px] uppercase font-extrabold text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
-                              Auto-fill
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                  <SuggestInput
+                    type="car_name"
+                    value={vehicle.car_name}
+                    onChange={(val) => handleCarNameChange(val)}
+                    placeholder="e.g. MG Hector, Creta, Swift Dzire..."
+                    className="w-full bg-white border border-stone-200/90 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 py-3 px-4 font-semibold text-sm text-stone-900 placeholder:text-stone-400 shadow-sm transition-all"
+                  />
                   <p className="mt-1 text-[11px] text-slate-400 font-medium">
                     Type initials to select or enter a new car name (auto-saved for future use).
                   </p>
@@ -645,44 +514,27 @@ export default function JobCardNew() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Customer Name */}
-                <div className="relative">
+                <div>
                   <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Customer Name (Optional)</label>
-                  <input
-                    type="text"
+                  <SuggestInput
+                    type="client_name"
                     value={customer.customer_name}
-                    onChange={(e) => {
-                      handleCustomerField('customer_name', e.target.value);
-                      handleAutocompleteSearch(e.target.value, 'ownerName');
-                    }}
-                    onFocus={() => {
-                      if (customer.customer_name.length >= 2) handleAutocompleteSearch(customer.customer_name, 'ownerName');
-                    }}
-                    onBlur={(e) => recordSuggestion('client_name', e.target.value)}
+                    onChange={(val) => handleCustomerField('customer_name', val)}
                     placeholder="e.g. Rahul Sharma"
-                    list="suggestions-client_name"
                     className="w-full bg-white border border-stone-200/90 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 py-3 px-4 font-semibold text-sm text-stone-900 placeholder:text-stone-400 shadow-sm transition-all"
                   />
-                  {renderAutocompleteDropdown('ownerName')}
                 </div>
 
                 {/* Mobile Number */}
-                <div className="relative">
+                <div>
                   <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Mobile Number *</label>
-                  <input
-                    type="tel"
+                  <SuggestInput
+                    type="mobile_no"
                     value={customer.mobile_no}
                     maxLength={10}
-                    onChange={(e) => {
-                      const val = e.target.value.replace(/\D/g, '').slice(0, 10);
-                      handleCustomerField('mobile_no', val);
-                      handleAutocompleteSearch(val, 'mobile');
-                    }}
-                    onFocus={() => {
-                      if (customer.mobile_no.length >= 2) handleAutocompleteSearch(customer.mobile_no, 'mobile');
-                    }}
-                    onBlur={(e) => recordSuggestion('mobile_no', e.target.value)}
+                    onChange={(val) => handleCustomerField('mobile_no', val.replace(/\D/g, '').slice(0, 10))}
+                    onSelect={handleMobileSelect}
                     placeholder="10-digit number"
-                    list="suggestions-mobile_no"
                     className="w-full bg-white border border-stone-200/90 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 py-3 px-4 font-semibold text-sm text-stone-900 placeholder:text-stone-400 shadow-sm transition-all"
                   />
                   {customer.mobile_no && cleanMobileNo(customer.mobile_no).length !== 10 && (
@@ -690,7 +542,6 @@ export default function JobCardNew() {
                       Mobile number must be exactly 10 digits.
                     </p>
                   )}
-                  {renderAutocompleteDropdown('mobile')}
                 </div>
 
                 {renderStitchInput('Alternate Mobile', 'alt_mobile', customer, handleCustomerField, { type: 'tel', placeholder: 'Optional 10-digit number' })}
@@ -716,10 +567,10 @@ export default function JobCardNew() {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                       <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Insurance Company</label>
-                      <input
-                        type="text"
+                      <SuggestInput
+                        type="insurance_company"
                         value={insurance.company}
-                        onChange={(e) => setInsurance(prev => ({ ...prev, company: e.target.value }))}
+                        onChange={(val) => setInsurance(prev => ({ ...prev, company: val }))}
                         placeholder="e.g. ICICI Lombard, HDFC Ergo"
                         className="w-full bg-white border border-stone-200/90 rounded-xl focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 py-3 px-4 font-semibold text-sm text-stone-900 placeholder:text-stone-400 shadow-sm transition-all"
                       />
@@ -848,16 +699,6 @@ export default function JobCardNew() {
           </motion.button>
         </div>
       </div>
-
-      {/* ── Suggestions Datalists ── */}
-      {Object.entries(globalSuggestions).map(([type, list]) => (
-        <datalist key={type} id={`suggestions-${type}`}>
-          {list.map((item, idx) => (
-            <option key={idx} value={item} />
-          ))}
-        </datalist>
-      ))}
-
     </AnimatedPage>
   );
 }

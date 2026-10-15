@@ -10,6 +10,7 @@ import Modal from '../components/shared/Modal';
 import VehicleSpecFields from '../components/shared/VehicleSpecFields';
 import { formatCurrency } from '../utils/format';
 import { JOB_CATEGORY_PRESETS } from './JobCardNew';
+import SuggestInput, { recordFieldSuggestions } from '../components/shared/SuggestInput';
 
 interface Service {
   id?: number;
@@ -187,6 +188,7 @@ export default function JobCardEdit() {
     });
 
     showToast(`Added manual ${manualType}`, 'success');
+    recordFieldSuggestions({ [manualType === 'part' ? 'part_name' : 'service_name']: manualName.trim() });
 
     setManualName('');
     setManualAmount('');
@@ -558,27 +560,7 @@ export default function JobCardEdit() {
     setCatalogSuggestions([]);
   };
 
-  // Global Suggestions state
-  const [globalSuggestions, setGlobalSuggestions] = useState<Record<string, string[]>>({});
 
-  const loadSuggestions = async (type: string) => {
-    try {
-      const res = await api.get(`/job-cards/suggestions/list?type=${type}`);
-      setGlobalSuggestions(prev => ({ ...prev, [type]: res.data.data || [] }));
-    } catch (err) {
-      console.warn('Failed to load suggestions for', type, err);
-    }
-  };
-
-  const recordSuggestion = async (type: string, text: string) => {
-    if (!text || !text.trim()) return;
-    try {
-      await api.post('/job-cards/suggestions/record', { type, text: text.trim() });
-      loadSuggestions(type);
-    } catch (err) {
-      console.warn('Failed to record suggestion', type, text, err);
-    }
-  };
 
   const saveTimer = useRef<any>(null);
 
@@ -622,13 +604,6 @@ export default function JobCardEdit() {
       const cats = res.data.data || [];
       setDropdownCategories(prev => Array.from(new Set([...prev, ...cats])).filter(Boolean));
     }).catch(() => {});
-
-    const types = [
-      'client_name', 'mobile_no', 'alt_mobile', 'email', 'pincode', 'address_line',
-      'colony_street', 'city', 'state', 'company_name', 'gstin', 'accessories', 'remarks',
-      'tech_notes', 'customer_notes', 'diagnosis', 'complaints', 'part_name', 'service_name'
-    ];
-    types.forEach(t => loadSuggestions(t));
   }, [id]);
 
   // --- Service / Concern Auto-Save ---
@@ -798,6 +773,10 @@ export default function JobCardEdit() {
         pointers: vehicleSpec.pointers || null
       });
       showToast('Vehicle details updated', 'success');
+      recordFieldSuggestions({
+        reg_no: vehicleSpec.reg_no,
+        remarks: vehicleSpec.pointers,
+      });
       setShowModal(null);
       fetchJob();
     } catch (err: any) {
@@ -865,6 +844,19 @@ export default function JobCardEdit() {
         customer_type: customerSpec.customer_type
       });
       showToast('Customer details updated', 'success');
+      recordFieldSuggestions({
+        client_name: customerSpec.customer_name,
+        mobile_no: customerSpec.mobile_no,
+        alt_mobile: customerSpec.alt_mobile,
+        email: customerSpec.email,
+        address_line: customerSpec.address_line,
+        colony_street: customerSpec.colony_street,
+        city: customerSpec.city,
+        state: customerSpec.state,
+        pincode: customerSpec.pincode,
+        company_name: customerSpec.company_name,
+        gstin: customerSpec.gstin,
+      });
       setShowModal(null);
       fetchJob();
     } catch (err: any) {
@@ -917,6 +909,9 @@ export default function JobCardEdit() {
         job_date: insuranceSpec.job_date || null
       });
       showToast('Job & Insurance details updated', 'success');
+      recordFieldSuggestions({
+        insurance_company: insuranceSpec.insurance_company,
+      });
       setShowModal(null);
       fetchJob();
     } catch (err: any) {
@@ -1318,9 +1313,8 @@ export default function JobCardEdit() {
                   type="text"
                   value={manualName}
                   onChange={(e) => handleManualSearch(e.target.value, manualType)}
-                  onBlur={(e) => recordSuggestion(manualType === 'part' ? 'part_name' : 'service_name', e.target.value)}
+                  onBlur={(e) => { if (e.target.value.trim()) recordFieldSuggestions({ [manualType === 'part' ? 'part_name' : 'service_name']: e.target.value }); }}
                   placeholder={manualType === 'labour' ? 'e.g. Paid Service Labour' : 'e.g. Engine Oil (5W-30)'}
-                  list={manualType === 'part' ? 'suggestions-part_name' : 'suggestions-service_name'}
                   className="w-full bg-white border border-slate-200 rounded-xl py-2 px-3 text-xs font-medium text-slate-700 focus:ring-2 focus:ring-amber-500/20"
                 />
                 
@@ -2050,14 +2044,6 @@ export default function JobCardEdit() {
             <div><span className="text-on-surface-muted font-bold uppercase tracking-widest text-[10px] block mb-1">Mode</span><span className="font-bold uppercase text-sm px-3 py-1 bg-gray-100 rounded-lg inline-block">{job.estimate.payment_mode}</span></div>
           </div>
 
-          {/* -- Suggestions Datalists -- */}
-          {Object.entries(globalSuggestions).map(([type, list]) => (
-            <datalist key={type} id={`suggestions-${type}`}>
-              {list.map((item, idx) => (
-                <option key={idx} value={item} />
-              ))}
-            </datalist>
-          ))}
         </div>
       )}
 
@@ -2106,13 +2092,11 @@ export default function JobCardEdit() {
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Other Pointers / Remarks / Indicators</label>
-                    <input
-                      type="text"
+                    <SuggestInput
+                      type="remarks"
                       value={vehicleSpec.pointers || ''}
-                      onChange={(e) => setVehicleSpec({ ...vehicleSpec, pointers: e.target.value })}
-                      onBlur={(e) => recordSuggestion('remarks', e.target.value)}
+                      onChange={(val) => setVehicleSpec({ ...vehicleSpec, pointers: val })}
                       placeholder="e.g. Dent on front bumper, scratches on left door..."
-                      list="suggestions-remarks"
                       className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
                     />
                   </div>
@@ -2137,101 +2121,104 @@ export default function JobCardEdit() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Customer Name</label>
-                    <input
-                      type="text"
+                    <SuggestInput
+                      type="client_name"
                       value={customerSpec.customer_name || ''}
-                      onChange={(e) => setCustomerSpec({ ...customerSpec, customer_name: e.target.value })}
-                      onBlur={(e) => recordSuggestion('client_name', e.target.value)}
-                      list="suggestions-client_name"
+                      onChange={(val) => setCustomerSpec({ ...customerSpec, customer_name: val })}
+                      onLinkedFill={(linked) => {
+                        setCustomerSpec((prev: any) => ({
+                          ...prev,
+                          mobile_no: prev.mobile_no || linked.mobile_no || '',
+                          email: prev.email || linked.email || '',
+                          address_line: prev.address_line || linked.address_line || '',
+                          city: prev.city || linked.city || '',
+                          pincode: prev.pincode || linked.pincode || '',
+                        }));
+                      }}
                       className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Mobile Number</label>
-                    <input
-                      type="tel"
+                    <SuggestInput
+                      type="mobile_no"
                       value={customerSpec.mobile_no || ''}
-                      onChange={(e) => setCustomerSpec({ ...customerSpec, mobile_no: e.target.value.replace(/\D/g, '').slice(0, 10) })}
-                      onBlur={(e) => recordSuggestion('mobile_no', e.target.value)}
+                      onChange={(val) => setCustomerSpec({ ...customerSpec, mobile_no: val.replace(/\D/g, '').slice(0, 10) })}
                       maxLength={10}
-                      list="suggestions-mobile_no"
+                      onLinkedFill={(linked) => {
+                        setCustomerSpec((prev: any) => ({
+                          ...prev,
+                          customer_name: prev.customer_name || linked.customer_name || linked.client_name || '',
+                          email: prev.email || linked.email || '',
+                          address_line: prev.address_line || linked.address_line || '',
+                          city: prev.city || linked.city || '',
+                          pincode: prev.pincode || linked.pincode || '',
+                        }));
+                      }}
                       className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Alternate Mobile</label>
-                    <input
-                      type="tel"
+                    <SuggestInput
+                      type="alt_mobile"
                       value={customerSpec.alt_mobile || ''}
-                      onChange={(e) => setCustomerSpec({ ...customerSpec, alt_mobile: e.target.value.replace(/\D/g, '').slice(0, 10) })}
-                      onBlur={(e) => recordSuggestion('alt_mobile', e.target.value)}
+                      onChange={(val) => setCustomerSpec({ ...customerSpec, alt_mobile: val.replace(/\D/g, '').slice(0, 10) })}
                       maxLength={10}
-                      list="suggestions-alt_mobile"
                       className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Email</label>
-                    <input
+                    <SuggestInput
                       type="email"
                       value={customerSpec.email || ''}
-                      onChange={(e) => setCustomerSpec({ ...customerSpec, email: e.target.value })}
-                      onBlur={(e) => recordSuggestion('email', e.target.value)}
-                      list="suggestions-email"
+                      onChange={(val) => setCustomerSpec({ ...customerSpec, email: val })}
                       className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
                     />
                   </div>
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Address</label>
-                    <textarea
+                    <SuggestInput
+                      type="address_line"
                       value={customerSpec.address_line || ''}
-                      onChange={(e) => setCustomerSpec({ ...customerSpec, address_line: e.target.value })}
-                      onBlur={(e) => recordSuggestion('address_line', e.target.value)}
-                      rows={2}
+                      onChange={(val) => setCustomerSpec({ ...customerSpec, address_line: val })}
                       className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Area / Colony / Street</label>
-                    <input
-                      type="text"
+                    <SuggestInput
+                      type="colony_street"
                       value={customerSpec.colony_street || ''}
-                      onChange={(e) => setCustomerSpec({ ...customerSpec, colony_street: e.target.value })}
-                      onBlur={(e) => recordSuggestion('colony_street', e.target.value)}
-                      list="suggestions-colony_street"
+                      onChange={(val) => setCustomerSpec({ ...customerSpec, colony_street: val })}
                       className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">City</label>
-                    <input
-                      type="text"
+                    <SuggestInput
+                      type="city"
                       value={customerSpec.city || ''}
-                      onChange={(e) => setCustomerSpec({ ...customerSpec, city: e.target.value })}
-                      onBlur={(e) => recordSuggestion('city', e.target.value)}
-                      list="suggestions-city"
+                      onChange={(val) => setCustomerSpec({ ...customerSpec, city: val })}
                       className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">State</label>
-                    <input
-                      type="text"
+                    <SuggestInput
+                      type="state"
                       value={customerSpec.state || ''}
-                      onChange={(e) => setCustomerSpec({ ...customerSpec, state: e.target.value })}
-                      onBlur={(e) => recordSuggestion('state', e.target.value)}
-                      list="suggestions-state"
+                      onChange={(val) => setCustomerSpec({ ...customerSpec, state: val })}
                       className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Pin Code</label>
-                    <input
-                      type="text"
+                    <SuggestInput
+                      type="pincode"
                       value={customerSpec.pincode || ''}
-                      onChange={(e) => setCustomerSpec({ ...customerSpec, pincode: e.target.value })}
-                      onBlur={(e) => recordSuggestion('pincode', e.target.value)}
-                      list="suggestions-pincode"
+                      onChange={(val) => setCustomerSpec({ ...customerSpec, pincode: val })}
                       className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
                     />
                   </div>
@@ -2247,28 +2234,24 @@ export default function JobCardEdit() {
                       <option value="fleet">Fleet</option>
                     </select>
                   </div>
-                      <div>
-                        <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Company Name</label>
-                        <input
-                          type="text"
-                          value={customerSpec.company_name || ''}
-                          onChange={(e) => setCustomerSpec({ ...customerSpec, company_name: e.target.value })}
-                          onBlur={(e) => recordSuggestion('company_name', e.target.value)}
-                          list="suggestions-company_name"
-                          className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">GSTIN</label>
-                        <input
-                          type="text"
-                          value={customerSpec.gstin || ''}
-                          onChange={(e) => setCustomerSpec({ ...customerSpec, gstin: e.target.value })}
-                          onBlur={(e) => recordSuggestion('gstin', e.target.value)}
-                          list="suggestions-gstin"
-                          className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
-                        />
-                      </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Company Name</label>
+                    <SuggestInput
+                      type="company_name"
+                      value={customerSpec.company_name || ''}
+                      onChange={(val) => setCustomerSpec({ ...customerSpec, company_name: val })}
+                      className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">GSTIN</label>
+                    <SuggestInput
+                      type="gstin"
+                      value={customerSpec.gstin || ''}
+                      onChange={(val) => setCustomerSpec({ ...customerSpec, gstin: val })}
+                      className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
+                    />
+                  </div>
                 </div>
                 <motion.button
                   whileTap={{ scale: 0.97 }}
@@ -2432,10 +2415,10 @@ export default function JobCardEdit() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Insurance Company</label>
-                    <input
-                      type="text"
+                    <SuggestInput
+                      type="insurance_company"
                       value={insuranceSpec.insurance_company || ''}
-                      onChange={(e) => setInsuranceSpec({ ...insuranceSpec, insurance_company: e.target.value })}
+                      onChange={(val) => setInsuranceSpec({ ...insuranceSpec, insurance_company: val })}
                       className="w-full bg-slate-50 border-none rounded-lg focus:ring-2 focus:ring-amber-500/20 py-2.5 px-3 font-medium text-sm text-on-surface"
                     />
                   </div>

@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2/promise');
 require('dotenv').config();
@@ -94,7 +94,8 @@ const migrationFiles = [
   { file: 'migration_fix_services_endpoint.sql' },
   { file: 'migration_product_sales.sql' },
   { file: 'src/config/migration_vehicle_master.sql' },
-  { file: 'src/config/seed_service_catalog.sql' }
+  { file: 'src/config/seed_service_catalog.sql' },
+  { file: 'src/config/migration_v15_suggestions_index.sql' }
 ];
 
 const ignoredErrors = [

@@ -2875,12 +2875,17 @@ router.post('/suggestions/record', auth, async (req, res) => {
     if (!type || !text || !text.trim()) {
       return res.status(400).json({ error: 'Suggestion type and text are required' });
     }
-    const cleanText = text.trim();
+    const { canonicalType, normalizeSuggestion } = require('./suggestions');
+    const cType = canonicalType(type);
+    const cleanText = normalizeSuggestion(cType, text);
+    if (!cleanText) {
+      return res.json({ success: true, recorded: 0 });
+    }
     await db.execute(
       `INSERT INTO global_suggestions (suggestion_type, suggestion_text, usage_count)
        VALUES (?, ?, 1)
        ON DUPLICATE KEY UPDATE usage_count = usage_count + 1`,
-      [type, cleanText]
+      [cType, cleanText]
     );
     res.json({ success: true });
   } catch (err) {
@@ -2891,18 +2896,45 @@ router.post('/suggestions/record', auth, async (req, res) => {
 
 router.get('/suggestions/list', auth, async (req, res) => {
   try {
-    const { type, q } = req.query;
+    const { type, q, limit } = req.query;
     if (!type) {
       return res.status(400).json({ error: 'Suggestion type is required' });
     }
-    let query = 'SELECT suggestion_text FROM global_suggestions WHERE suggestion_type = ?';
-    const params = [type];
-    if (q && q.trim()) {
-      query += ' AND suggestion_text LIKE ?';
-      params.push(`%${q.trim()}%`);
+    const { canonicalType } = require('./suggestions');
+    const cType = canonicalType(type);
+    const limitNum = Math.min(Math.max(parseInt(String(limit || 25), 10) || 25, 1), 25);
+    const searchStr = q ? String(q).trim() : '';
+
+    let rows = [];
+    if (searchStr.length > 0) {
+      let formattedSearch = searchStr;
+      if (cType === 'reg_no') {
+        formattedSearch = searchStr.toUpperCase().replace(/[\s\-_]/g, '');
+      }
+      const [queryResult] = await db.query(
+        `SELECT suggestion_text
+         FROM global_suggestions
+         WHERE (suggestion_type = ? OR suggestion_type = ?)
+           AND suggestion_text LIKE ?
+         ORDER BY
+           CASE WHEN suggestion_text LIKE ? THEN 0 ELSE 1 END,
+           usage_count DESC,
+           suggestion_text ASC
+         LIMIT ?`,
+        [cType, type, `%${formattedSearch}%`, `${formattedSearch}%`, limitNum]
+      );
+      rows = queryResult;
+    } else {
+      const [queryResult] = await db.query(
+        `SELECT suggestion_text
+         FROM global_suggestions
+         WHERE suggestion_type = ? OR suggestion_type = ?
+         ORDER BY usage_count DESC, suggestion_text ASC
+         LIMIT ?`,
+        [cType, type, limitNum]
+      );
+      rows = queryResult;
     }
-    query += ' ORDER BY usage_count DESC, suggestion_text ASC LIMIT 25';
-    const [rows] = await db.query(query, params);
     res.json({ data: rows.map(r => r.suggestion_text) });
   } catch (err) {
     console.error('Get suggestions error:', err);

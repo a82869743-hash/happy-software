@@ -3,6 +3,7 @@ import api from '../api/axios';
 import AnimatedPage from '../components/shared/AnimatedPage';
 import { showToast } from '../components/shared/Toast';
 import { formatCurrency, getLocalDateString } from '../utils/format';
+import SuggestInput, { recordFieldSuggestions } from '../components/shared/SuggestInput';
 
 interface BillItem {
   id: string;
@@ -62,80 +63,6 @@ export default function ProductSell() {
   const [dateFilter, setDateFilter] = useState<'today' | 'all' | 'custom'>('today');
   const [customFilterDate, setCustomFilterDate] = useState(getLocalDateString());
 
-  // Suggestions state
-  const [suggestions, setSuggestions] = useState<any[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [activeField, setActiveField] = useState<'customerName' | 'customerMobile' | 'vehicleNo' | null>(null);
-  const [carNameSuggestions, setCarNameSuggestions] = useState<string[]>([]);
-
-  const handleCustomerSearch = async (val: string, field: 'customerName' | 'customerMobile' | 'vehicleNo') => {
-    setActiveField(field);
-    if (!val || val.length < 2) {
-      setSuggestions([]);
-      setShowSuggestions(false);
-      return;
-    }
-    try {
-      const res = await api.get('/customers/search-connected', { params: { q: val } });
-      setSuggestions(res.data.data || []);
-      setShowSuggestions(true);
-    } catch {
-      setSuggestions([]);
-      setShowSuggestions(false);
-    }
-  };
-
-  const handleSelectCustomer = (sug: any) => {
-    const carName = sug.car_name || [sug.make, sug.model].filter(Boolean).join(' ') || '';
-    setForm(prev => ({
-      ...prev,
-      customer_name: sug.customer_name || '',
-      customer_mobile: sug.customer_mobile || sug.mobile_no || '',
-      customer_address: sug.address_line || prev.customer_address,
-      car_name: carName || prev.car_name,
-      vehicle_no: sug.reg_no || prev.vehicle_no,
-    }));
-    setSuggestions([]);
-    setShowSuggestions(false);
-    setActiveField(null);
-  };
-
-  const renderSuggestions = (field: 'customerName' | 'customerMobile' | 'vehicleNo') => {
-    if (!showSuggestions || activeField !== field || suggestions.length === 0) return null;
-    return (
-      <div className="absolute left-0 right-0 mt-1 bg-white border border-amber-200/80 rounded-xl shadow-xl max-h-52 overflow-y-auto z-50 divide-y divide-gray-100">
-        {suggestions.map((sug, idx) => (
-          <div
-            key={idx}
-            onMouseDown={() => handleSelectCustomer(sug)}
-            className="p-2.5 hover:bg-amber-50 cursor-pointer text-xs font-medium text-slate-700 transition-colors"
-          >
-            <div className="font-bold text-slate-900 flex justify-between items-center">
-              <span>{sug.customer_name}</span>
-              <span className="font-mono text-[10px] text-amber-900 font-bold bg-amber-100/80 px-1.5 py-0.5 rounded border border-amber-200/60">
-                {sug.customer_mobile || sug.mobile_no}
-              </span>
-            </div>
-            {sug.reg_no && (
-              <div className="text-[10px] text-slate-500 mt-0.5 flex items-center gap-1">
-                <span>🚗</span>
-                <span>{sug.reg_no}</span>
-                <span>·</span>
-                <span>{[sug.make, sug.model].filter(Boolean).join(' ')}</span>
-              </div>
-            )}
-            {sug.address_line && (
-              <div className="text-[10px] text-slate-500 mt-0.5 truncate flex items-center gap-1">
-                <span>📍</span>
-                <span>{sug.address_line}</span>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    );
-  };
-
   const today = getLocalDateString();
 
   const fetchSales = useCallback(async () => {
@@ -154,9 +81,6 @@ export default function ProductSell() {
 
   useEffect(() => {
     fetchSales();
-    api.get('/job-cards/suggestions/list?type=car_name')
-      .then(res => setCarNameSuggestions(res.data?.data || []))
-      .catch(() => {});
   }, [fetchSales]);
 
   const calculateBillTotal = (items: BillItem[]) => {
@@ -325,6 +249,16 @@ export default function ProductSell() {
         qty: totalBillQty
       };
 
+      // Fire-and-forget record suggestions
+      recordFieldSuggestions({
+        client_name: form.customer_name,
+        mobile_no: form.customer_mobile,
+        address_line: form.customer_address,
+        car_name: form.car_name,
+        reg_no: form.vehicle_no,
+        ...preparedItems.reduce((acc, it) => ({ ...acc, product_name: it.product_name }), {})
+      });
+
       if (editingSale) {
         // UPDATE existing bill as a single consolidated bill with all items
         const res = await api.put(`/product-sales/${editingSale.id}`, payload);
@@ -338,9 +272,6 @@ export default function ProductSell() {
         const newSaleId = res.data?.id;
         const invoiceNo = res.data?.invoice_no || `ACC-${String(newSaleId).padStart(4, '0')}`;
         showToast(`Sale recorded & Invoice #${invoiceNo} generated (${preparedItems.length} item(s))!`, 'success');
-        if (form.car_name.trim()) {
-          api.post('/job-cards/suggestions/record', { type: 'car_name', text: form.car_name.trim() }).catch(() => {});
-        }
         setForm(emptyForm);
         fetchSales();
         if (newSaleId) {
@@ -492,43 +423,50 @@ export default function ProductSell() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {/* 1. Customer / Owner Name */}
-                  <div className="relative">
+                  <div>
                     <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-600 mb-1 font-label">
                       Customer / Owner Name (Optional)
                     </label>
-                    <input
-                      type="text"
+                    <SuggestInput
+                      type="client_name"
                       value={form.customer_name}
-                      onChange={e => {
-                        setForm({ ...form, customer_name: e.target.value });
-                        handleCustomerSearch(e.target.value, 'customerName');
+                      onChange={val => setForm(prev => ({ ...prev, customer_name: val }))}
+                      onLinkedFill={linked => {
+                        setForm(prev => ({
+                          ...prev,
+                          customer_mobile: prev.customer_mobile || linked.mobile_no || '',
+                          customer_address: prev.customer_address || linked.address_line || '',
+                          car_name: prev.car_name || linked.car_name || '',
+                          vehicle_no: prev.vehicle_no || linked.reg_no || '',
+                        }));
                       }}
-                      onFocus={() => { if (form.customer_name) setShowSuggestions(true); setActiveField('customerName'); }}
-                      onBlur={() => { setTimeout(() => { setShowSuggestions(false); }, 200); }}
                       placeholder="Customer name"
                       className="w-full bg-stone-50/60 border border-stone-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-stone-900 placeholder:text-stone-400 focus:bg-white focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
                     />
-                    {renderSuggestions('customerName')}
                   </div>
 
                   {/* 2. Customer Mobile */}
-                  <div className="relative">
+                  <div>
                     <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-600 mb-1 font-label">
                       Mobile (for Bill)
                     </label>
-                    <input
-                      type="tel"
+                    <SuggestInput
+                      type="mobile_no"
                       value={form.customer_mobile}
-                      onChange={e => {
-                        setForm({ ...form, customer_mobile: e.target.value });
-                        handleCustomerSearch(e.target.value, 'customerMobile');
+                      onChange={val => setForm(prev => ({ ...prev, customer_mobile: val.replace(/\D/g, '').slice(0, 10) }))}
+                      maxLength={10}
+                      onLinkedFill={linked => {
+                        setForm(prev => ({
+                          ...prev,
+                          customer_name: prev.customer_name || linked.customer_name || linked.client_name || '',
+                          customer_address: prev.customer_address || linked.address_line || '',
+                          car_name: prev.car_name || linked.car_name || '',
+                          vehicle_no: prev.vehicle_no || linked.reg_no || '',
+                        }));
                       }}
-                      onFocus={() => { if (form.customer_mobile) setShowSuggestions(true); setActiveField('customerMobile'); }}
-                      onBlur={() => { setTimeout(() => { setShowSuggestions(false); }, 200); }}
                       placeholder="e.g. 9876543210"
                       className="w-full bg-stone-50/60 border border-stone-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-stone-900 placeholder:text-stone-400 focus:bg-white focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all font-mono"
                     />
-                    {renderSuggestions('customerMobile')}
                   </div>
                 </div>
 
@@ -538,41 +476,37 @@ export default function ProductSell() {
                     <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-600 mb-1 font-label">
                       Car Name / Model (Optional)
                     </label>
-                    <input
-                      type="text"
+                    <SuggestInput
+                      type="car_name"
                       value={form.car_name}
-                      onChange={e => setForm({ ...form, car_name: e.target.value })}
+                      onChange={val => setForm(prev => ({ ...prev, car_name: val }))}
                       placeholder="e.g. Swift, Creta, Nexon..."
-                      list="product-sell-car-names"
                       className="w-full bg-stone-50/60 border border-stone-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-stone-900 placeholder:text-stone-400 focus:bg-white focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
                     />
-                    <datalist id="product-sell-car-names">
-                      {carNameSuggestions.map((c, i) => (
-                        <option key={i} value={c} />
-                      ))}
-                    </datalist>
                   </div>
 
                   {/* Vehicle Reg No */}
-                  <div className="relative">
+                  <div>
                     <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-600 mb-1 font-label">
                       Car Number / Reg No (Optional)
                     </label>
-                    <input
-                      type="text"
+                    <SuggestInput
+                      type="reg_no"
                       value={form.vehicle_no}
-                      onChange={e => {
-                        const val = e.target.value.replace(/[^A-Z0-9]/gi, '').toUpperCase().slice(0, 15);
-                        setForm({ ...form, vehicle_no: val });
-                        handleCustomerSearch(val, 'vehicleNo');
-                      }}
-                      onFocus={() => { if (form.vehicle_no) setShowSuggestions(true); setActiveField('vehicleNo'); }}
-                      onBlur={() => { setTimeout(() => { setShowSuggestions(false); }, 200); }}
-                      placeholder="e.g. GJ06AB1234"
+                      onChange={val => setForm(prev => ({ ...prev, vehicle_no: val.toUpperCase().replace(/[\s\-_]/g, '') }))}
                       maxLength={15}
+                      onLinkedFill={linked => {
+                        setForm(prev => ({
+                          ...prev,
+                          customer_name: prev.customer_name || linked.customer_name || linked.client_name || '',
+                          customer_mobile: prev.customer_mobile || linked.mobile_no || '',
+                          customer_address: prev.customer_address || linked.address_line || '',
+                          car_name: prev.car_name || linked.car_name || '',
+                        }));
+                      }}
+                      placeholder="e.g. GJ06AB1234"
                       className="w-full bg-stone-50/60 border border-stone-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-stone-900 placeholder:text-stone-400 focus:bg-white focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all font-mono uppercase"
                     />
-                    {renderSuggestions('vehicleNo')}
                   </div>
                 </div>
 
@@ -582,10 +516,10 @@ export default function ProductSell() {
                     <label className="block text-[10px] font-bold uppercase tracking-widest text-stone-600 mb-1 font-label">
                       Address / Area / Landmark
                     </label>
-                    <input
-                      type="text"
+                    <SuggestInput
+                      type="address_line"
                       value={form.customer_address}
-                      onChange={e => setForm({ ...form, customer_address: e.target.value })}
+                      onChange={val => setForm(prev => ({ ...prev, customer_address: val }))}
                       placeholder="Address / Area / Landmark..."
                       className="w-full bg-stone-50/60 border border-stone-200 rounded-xl py-2.5 px-3 text-xs font-semibold text-stone-900 placeholder:text-stone-400 focus:bg-white focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all"
                     />
@@ -654,10 +588,10 @@ export default function ProductSell() {
                           <span className="w-5 h-5 rounded-full bg-amber-100 text-amber-900 border border-amber-300/60 text-[10px] font-black flex items-center justify-center shrink-0">
                             {index + 1}
                           </span>
-                          <input
-                            type="text"
+                          <SuggestInput
+                            type="product_name"
                             value={item.product_name}
-                            onChange={e => handleItemChange(index, 'product_name', e.target.value)}
+                            onChange={val => handleItemChange(index, 'product_name', val)}
                             placeholder="Accessory / product name..."
                             className="flex-1 bg-white border border-stone-200 text-stone-900 rounded-lg py-1.5 px-2.5 text-xs focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 placeholder:text-stone-400 font-medium"
                           />

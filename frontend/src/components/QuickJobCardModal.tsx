@@ -4,6 +4,7 @@ import Modal from './shared/Modal';
 import api from '../api/axios';
 import { showToast } from './shared/Toast';
 import { formatCurrency } from '../utils/format';
+import SuggestInput, { recordFieldSuggestions, type LinkedSuggestionData } from './shared/SuggestInput';
 
 interface QuickService {
   id: number;
@@ -42,68 +43,7 @@ export default function QuickJobCardModal({ onClose, onCreated }: Props) {
   const [carName, setCarName] = useState('');
   const [odometer, setOdometer] = useState('');
 
-  // Auto-fill suggestions state
-  const [suggestions, setSuggestions] = useState<any[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [activeField, setActiveField] = useState<'regNo' | 'ownerName' | 'mobile' | null>(null);
 
-  const handleSearch = async (val: string, field: 'regNo' | 'ownerName' | 'mobile') => {
-    setActiveField(field);
-    if (!val || val.length < 2) {
-      setSuggestions([]);
-      setShowSuggestions(false);
-      return;
-    }
-    try {
-      const res = await api.get(`/customers/search-connected`, { params: { q: val } });
-      setSuggestions(res.data.data || []);
-      setShowSuggestions(true);
-    } catch (err) {
-      console.error('Connected search error:', err);
-      setSuggestions([]);
-    }
-  };
-
-  const handleSelectSuggestion = (sug: any) => {
-    setOwnerName(sug.customer_name || '');
-    setMobile(sug.customer_mobile || sug.mobile_no || '');
-    if (sug.address_line) setAddress(sug.address_line);
-    if (sug.reg_no) setRegNo(sug.reg_no);
-    if (sug.make || sug.model) {
-      setCarName([sug.make, sug.model, sug.variant].filter(Boolean).join(' '));
-    } else if (sug.car_name) {
-      setCarName(sug.car_name);
-    }
-    if (sug.odometer) setOdometer(String(sug.odometer));
-    setSuggestions([]);
-    setShowSuggestions(false);
-    setActiveField(null);
-  };
-
-  const renderSuggestions = (field: 'regNo' | 'ownerName' | 'mobile') => {
-    if (!showSuggestions || activeField !== field || suggestions.length === 0) return null;
-    return (
-      <div className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto z-50">
-        {suggestions.map((sug, idx) => (
-          <div
-            key={idx}
-            onMouseDown={() => handleSelectSuggestion(sug)}
-            className="p-2.5 hover:bg-amber-50 cursor-pointer border-b border-gray-50 last:border-0 text-xs font-medium text-on-surface"
-          >
-            <div className="font-bold text-on-surface flex justify-between">
-              <span>{sug.customer_name}</span>
-              <span className="font-mono text-[10px] text-slate-400">{sug.customer_mobile || sug.mobile_no}</span>
-            </div>
-            {sug.reg_no && (
-              <div className="text-[10px] text-slate-500 mt-0.5">
-                🚗 {sug.reg_no} · {[sug.make, sug.model].filter(Boolean).join(' ')}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    );
-  };
 
   useEffect(() => {
     api.get('/quick-job-cards/quick-services')
@@ -143,6 +83,24 @@ export default function QuickJobCardModal({ onClose, onCreated }: Props) {
   const gstAmount = billingType === 'gst' ? subtotal * 0.18 : 0;
   const total = subtotal + gstAmount;
 
+  const handleRegSelect = (_val: string, linked?: LinkedSuggestionData) => {
+    if (!linked) return;
+    if (!carName && linked.car_name) setCarName(linked.car_name);
+    if (!ownerName && (linked.client_name || linked.customer_name)) setOwnerName(linked.client_name || linked.customer_name || '');
+    if (!mobile && linked.mobile_no) setMobile(linked.mobile_no);
+    if (!address && linked.address_line) setAddress(linked.address_line);
+    if (linked.odometer) setOdometer(String(linked.odometer));
+  };
+
+  const handleMobileSelect = (_val: string, linked?: LinkedSuggestionData) => {
+    if (!linked) return;
+    if (!ownerName && (linked.client_name || linked.customer_name)) setOwnerName(linked.client_name || linked.customer_name || '');
+    if (!regNo && linked.reg_no) setRegNo(linked.reg_no);
+    if (!carName && linked.car_name) setCarName(linked.car_name);
+    if (!address && linked.address_line) setAddress(linked.address_line);
+    if (linked.odometer) setOdometer(String(linked.odometer));
+  };
+
   const handleSubmit = async () => {
     if (!regNo.trim() || !mobile.trim() || !carName.trim()) {
       showToast('Please enter registration number, car name, and mobile number', 'error');
@@ -171,6 +129,14 @@ export default function QuickJobCardModal({ onClose, onCreated }: Props) {
         custom_service_rate: customRate,
         save_custom_service: saveCustomService
       });
+      recordFieldSuggestions({
+        reg_no: regNo,
+        car_name: carName,
+        client_name: ownerName,
+        mobile_no: mobile,
+        address_line: address,
+        service_name: customService
+      });
       showToast(`Car Wash job ${res.data.job_no} created!`, 'success');
       onCreated(res.data);
     } catch (err: any) {
@@ -188,86 +154,67 @@ export default function QuickJobCardModal({ onClose, onCreated }: Props) {
 
         {/* ── Customer Details ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="relative">
+          <div>
             <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
               Owner Name <span className="text-slate-400 font-normal lowercase">(optional)</span>
             </label>
-            <input
-              type="text"
+            <SuggestInput
+              type="client_name"
               value={ownerName}
-              onChange={(e) => {
-                const val = e.target.value;
-                setOwnerName(val);
-                handleSearch(val, 'ownerName');
-              }}
-              onFocus={() => { if (ownerName) setShowSuggestions(true); setActiveField('ownerName'); }}
-              onBlur={() => { setTimeout(() => { setShowSuggestions(false); }, 200); }}
+              onChange={setOwnerName}
               placeholder="Customer name"
               className={inputCls}
               autoFocus
             />
-            {renderSuggestions('ownerName')}
           </div>
-          <div className="relative">
+          <div>
             <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
               Mobile <span className="text-red-400">*</span>
             </label>
-            <input
-              type="tel"
+            <SuggestInput
+              type="mobile_no"
               value={mobile}
-              onChange={(e) => {
-                const val = e.target.value.replace(/\D/g, '').slice(0, 10);
-                setMobile(val);
-                handleSearch(val, 'mobile');
-              }}
-              onFocus={() => { if (mobile) setShowSuggestions(true); setActiveField('mobile'); }}
-              onBlur={() => { setTimeout(() => { setShowSuggestions(false); }, 200); }}
+              onChange={(val) => setMobile(val.replace(/\D/g, '').slice(0, 10))}
+              onSelect={handleMobileSelect}
               placeholder="9876543210"
               maxLength={10}
               className={inputCls}
             />
-            {renderSuggestions('mobile')}
           </div>
           <div className="sm:col-span-2">
             <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
               Address
             </label>
-            <input
-              type="text"
+            <SuggestInput
+              type="address_line"
               value={address}
-              onChange={(e) => setAddress(e.target.value)}
+              onChange={setAddress}
               placeholder="Address / Area / Landmark..."
               className={inputCls}
             />
           </div>
-          <div className="relative">
+          <div>
             <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
               Reg. No <span className="text-red-400">*</span>
             </label>
-            <input
-              type="text"
+            <SuggestInput
+              type="reg_no"
               value={regNo}
-              maxLength={10}
-              onChange={(e) => {
-                const val = e.target.value.replace(/[^A-Z0-9]/gi, '').toUpperCase().slice(0, 10);
-                setRegNo(val);
-                handleSearch(val, 'regNo');
-              }}
-              onFocus={() => { if (regNo) setShowSuggestions(true); setActiveField('regNo'); }}
-              onBlur={() => { setTimeout(() => { setShowSuggestions(false); }, 200); }}
+              onChange={(val) => setRegNo(val.replace(/[^A-Z0-9]/gi, '').toUpperCase().slice(0, 10))}
+              onSelect={handleRegSelect}
               placeholder="GJ06XX0000"
+              maxLength={10}
               className={inputCls}
             />
-            {renderSuggestions('regNo')}
           </div>
           <div>
             <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
               Car Name <span className="text-red-400">*</span>
             </label>
-            <input
-              type="text"
+            <SuggestInput
+              type="car_name"
               value={carName}
-              onChange={(e) => setCarName(e.target.value)}
+              onChange={setCarName}
               placeholder="Swift Dzire, Creta..."
               className={inputCls}
             />
@@ -302,13 +249,15 @@ export default function QuickJobCardModal({ onClose, onCreated }: Props) {
 
           {/* Option to add new preset service */}
           <div className="flex gap-2 mt-3 items-center max-w-sm">
-            <input
-              type="text"
-              placeholder="Save new quick service for future use..."
-              value={newPresetName}
-              onChange={(e) => setNewPresetName(e.target.value)}
-              className="flex-grow bg-slate-50 border border-slate-200 rounded-lg py-1.5 px-3 text-xs font-medium text-on-surface placeholder:text-slate-400"
-            />
+            <div className="flex-grow">
+              <SuggestInput
+                type="service_name"
+                placeholder="Save new quick service for future use..."
+                value={newPresetName}
+                onChange={setNewPresetName}
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg py-1.5 px-3 text-xs font-medium text-on-surface placeholder:text-slate-400"
+              />
+            </div>
             <button
               type="button"
               onClick={async () => {
@@ -376,10 +325,10 @@ export default function QuickJobCardModal({ onClose, onCreated }: Props) {
               <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
                 Custom Service (optional)
               </label>
-              <input
-                type="text"
+              <SuggestInput
+                type="service_name"
                 value={customService}
-                onChange={(e) => setCustomService(e.target.value)}
+                onChange={setCustomService}
                 placeholder="Add any other service..."
                 className={inputCls}
               />

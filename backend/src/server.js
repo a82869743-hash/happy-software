@@ -86,6 +86,7 @@ app.use('/api/inspections', require('./routes/inspections'));
 app.use('/api/estimate-jobs', require('./routes/estimateJobs'));
 app.use('/api/settings', require('./routes/settings'));
 app.use('/api/service-reminders', require('./routes/serviceReminders'));
+app.use('/api/suggestions', require('./routes/suggestions'));
 
 // ── Public routes (NO auth) ──
 app.use('/api/public', require('./routes/publicTracking'));

@@ -16,6 +16,7 @@ import {
   type DivisionType
 } from '../utils/invoiceFormat';
 import { renderDivisionBillHtml } from '../utils/divisionBillRenderer';
+import SuggestInput, { recordFieldSuggestions } from '../components/shared/SuggestInput';
 interface Payment {
   id: number;
   job_card_id?: number | null;
@@ -225,6 +226,7 @@ function PaymentFormModal({ prefill, onClose, onSaved }: { prefill?: any; onClos
         }
       }
 
+      recordFieldSuggestions({ remarks: form.remarks });
       showToast('Payment recorded', 'success'); onSaved(); onClose();
     } catch { showToast('Failed to record payment', 'error'); }
     finally { setSaving(false); }
@@ -489,7 +491,7 @@ function PaymentFormModal({ prefill, onClose, onSaved }: { prefill?: any; onClos
           </div>
 
           <div><label className={lbl}>Transaction ID</label><input className={cls} value={form.transaction_id} onChange={e => setForm(f => ({ ...f, transaction_id: e.target.value }))} placeholder="UPI ref / card last 4" /></div>
-          <div><label className={lbl}>Remarks</label><textarea className={cls + ' resize-none'} rows={2} value={form.remarks} onChange={e => setForm(f => ({ ...f, remarks: e.target.value }))} /></div>
+          <div><label className={lbl}>Remarks</label><SuggestInput type="remarks" className={cls} value={form.remarks} onChange={val => setForm(f => ({ ...f, remarks: val }))} placeholder="e.g. Settle balance, advance..." /></div>
         </form>
         <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-3">
           <button onClick={onClose} className="btn-secondary text-sm py-2.5 px-5">Cancel</button>
@@ -910,6 +912,7 @@ function ConsolidatedSettlementModal({
         `Cleared ${totalClearedCount} bills across ${activeDivisions.length} division(s) totaling ₹${totalAmountCleared.toLocaleString('en-IN')}`,
         'success'
       );
+      recordFieldSuggestions({ remarks });
 
       onSettled();
       onClose();
@@ -1057,10 +1060,10 @@ function ConsolidatedSettlementModal({
           <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
             Remarks / Reference
           </label>
-          <input
-            type="text"
+          <SuggestInput
+            type="remarks"
             value={remarks}
-            onChange={e => setRemarks(e.target.value)}
+            onChange={val => setRemarks(val)}
             className="w-full px-3 py-2 bg-stone-50 border border-stone-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-amber-500/20"
             placeholder="e.g. Settle all vehicles in single go"
           />
@@ -1424,6 +1427,16 @@ function HappyPaymentBillModal({ paymentId, onClose, onPaymentUpdated }: HappyPa
         reg_no: editCustomer.reg_no.toUpperCase().trim(),
         car_name: editCustomer.car_name.trim(),
         services: editServices
+      });
+      recordFieldSuggestions({
+        client_name: editCustomer.owner_name,
+        mobile_no: editCustomer.mobile_no,
+        address_line: editCustomer.address,
+        gstin: editCustomer.customer_gstin,
+        reg_no: editCustomer.reg_no,
+        car_name: editCustomer.car_name,
+        remarks: editForm.remarks,
+        ...editServices.reduce((acc, s) => ({ ...acc, service_name: s.service_name }), {})
       });
       showToast('Whole payment bill & services updated successfully!', 'success');
       const updated = res.data?.data || {};
@@ -1864,10 +1877,10 @@ function HappyPaymentBillModal({ paymentId, onClose, onPaymentUpdated }: HappyPa
                     <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1">
                       Remarks / Notes
                     </label>
-                    <input
-                      type="text"
+                    <SuggestInput
+                      type="remarks"
                       value={editForm.remarks}
-                      onChange={e => setEditForm({ ...editForm, remarks: e.target.value })}
+                      onChange={val => setEditForm({ ...editForm, remarks: val })}
                       className="w-full px-3.5 py-2.5 rounded-xl border border-stone-300 focus:ring-2 focus:ring-red-500/20 focus:border-red-500 text-stone-900 text-sm bg-white"
                       placeholder="e.g. Settle balance, advance, etc."
                     />

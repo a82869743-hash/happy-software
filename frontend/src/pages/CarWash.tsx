@@ -5,6 +5,7 @@ import api from '../api/axios';
 import AnimatedPage from '../components/shared/AnimatedPage';
 import { showToast } from '../components/shared/Toast';
 import { formatCurrency, getLocalDateString } from '../utils/format';
+import SuggestInput, { recordFieldSuggestions, type LinkedSuggestionData } from '../components/shared/SuggestInput';
 
 interface QuickService {
   id: number;
@@ -73,10 +74,7 @@ export default function CarWash() {
   const [dateFilter, setDateFilter] = useState<'today' | 'all' | 'custom'>('all');
   const [customFilterDate, setCustomFilterDate] = useState(getLocalDateString());
 
-  // Auto-fill suggestions state
-  const [suggestions, setSuggestions] = useState<any[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [activeField, setActiveField] = useState<'regNo' | 'ownerName' | 'mobile' | null>(null);
+
 
   // Fetch preset services
   useEffect(() => {
@@ -190,67 +188,7 @@ export default function CarWash() {
     }
   };
 
-  const handleSearch = async (val: string, field: 'regNo' | 'ownerName' | 'mobile') => {
-    setActiveField(field);
-    if (!val || val.length < 2) {
-      setSuggestions([]);
-      setShowSuggestions(false);
-      return;
-    }
-    try {
-      const res = await api.get('/customers/search-connected', { params: { q: val } });
-      setSuggestions(res.data.data || []);
-      setShowSuggestions(true);
-    } catch {
-      setSuggestions([]);
-    }
-  };
 
-  const handleSelectSuggestion = (sug: any) => {
-    setOwnerName(sug.customer_name || '');
-    setMobile(sug.customer_mobile || sug.mobile_no || '');
-    if (sug.address_line) setAddress(sug.address_line);
-    if (sug.reg_no) setRegNo(sug.reg_no);
-    if (sug.make || sug.model) {
-      setCarName([sug.make, sug.model, sug.variant].filter(Boolean).join(' '));
-    } else if (sug.car_name) {
-      setCarName(sug.car_name);
-    }
-    if (sug.odometer) setOdometer(String(sug.odometer));
-    setSuggestions([]);
-    setShowSuggestions(false);
-    setActiveField(null);
-  };
-
-  const renderSuggestions = (field: 'regNo' | 'ownerName' | 'mobile') => {
-    if (!showSuggestions || activeField !== field || suggestions.length === 0) return null;
-    return (
-      <div className="absolute left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-48 overflow-y-auto z-50">
-        {suggestions.map((sug, idx) => (
-          <div
-            key={idx}
-            onMouseDown={() => handleSelectSuggestion(sug)}
-            className="p-2.5 hover:bg-amber-50 cursor-pointer border-b border-gray-50 last:border-0 text-xs font-medium text-slate-700 transition-colors"
-          >
-            <div className="font-bold text-slate-800 flex justify-between">
-              <span>{sug.customer_name}</span>
-              <span className="font-mono text-[10px] text-slate-400">{sug.customer_mobile || sug.mobile_no}</span>
-            </div>
-            {sug.reg_no && (
-              <div className="text-[10px] text-slate-500 mt-0.5">
-                🚗 {sug.reg_no} · {[sug.make, sug.model].filter(Boolean).join(' ')}
-              </div>
-            )}
-            {sug.address_line && (
-              <div className="text-[10px] text-slate-400 mt-0.5 truncate">
-                📍 {sug.address_line}
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
-    );
-  };
 
   const toggleService = (svc: QuickService) => {
     const exists = selectedServices.find(s => s.service_name === svc.service_name);
@@ -280,6 +218,22 @@ export default function CarWash() {
   const subtotal = selectedServices.reduce((sum, s) => sum + (parseFloat(String(s.amount)) || 0), 0)
     + (customService.trim() ? parseFloat(customRate) || 0 : 0);
     const total = subtotal;
+
+  const handleRegSelect = (_val: string, linked?: LinkedSuggestionData) => {
+    if (!linked) return;
+    if (!carName && linked.car_name) setCarName(linked.car_name);
+    if (!ownerName && (linked.client_name || linked.customer_name)) setOwnerName(linked.client_name || linked.customer_name || '');
+    if (!mobile && linked.mobile_no) setMobile(linked.mobile_no);
+    if (!address && linked.address_line) setAddress(linked.address_line);
+  };
+
+  const handleMobileSelect = (_val: string, linked?: LinkedSuggestionData) => {
+    if (!linked) return;
+    if (!ownerName && (linked.client_name || linked.customer_name)) setOwnerName(linked.client_name || linked.customer_name || '');
+    if (!regNo && linked.reg_no) setRegNo(linked.reg_no);
+    if (!carName && linked.car_name) setCarName(linked.car_name);
+    if (!address && linked.address_line) setAddress(linked.address_line);
+  };
 
   const handleSubmit = async () => {
     if (!mobile.trim() || !regNo.trim() || !carName.trim()) {
@@ -315,12 +269,28 @@ export default function CarWash() {
       if (editingJobId) {
         // UPDATE existing Car Wash job card
         await api.put(`/quick-job-cards/${editingJobId}`, payload);
+        recordFieldSuggestions({
+          reg_no: regNo,
+          car_name: carName,
+          client_name: ownerName,
+          mobile_no: mobile,
+          address_line: address,
+          service_name: customService
+        });
         showToast(`Car Wash order #${editingJobNo} updated successfully!`, 'success');
         handleCancelEdit();
         fetchRecentJobs();
       } else {
         // CREATE new Car Wash job card
         const res = await api.post('/quick-job-cards', payload);
+        recordFieldSuggestions({
+          reg_no: regNo,
+          car_name: carName,
+          client_name: ownerName,
+          mobile_no: mobile,
+          address_line: address,
+          service_name: customService
+        });
         showToast(`Car Wash order ${res.data.job_no} created successfully!`, 'success');
         handleCancelEdit();
         fetchRecentJobs();
@@ -484,45 +454,33 @@ export default function CarWash() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* 1. Owner Name */}
-              <div className="relative">
+              <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                   Customer / Owner Name <span className="text-slate-400 font-normal text-[10px] lowercase">(optional)</span>
                 </label>
-                <input
-                  type="text"
+                <SuggestInput
+                  type="client_name"
                   value={ownerName}
-                  onChange={(e) => {
-                    setOwnerName(e.target.value);
-                    handleSearch(e.target.value, 'ownerName');
-                  }}
-                  onFocus={() => { if (ownerName) setShowSuggestions(true); setActiveField('ownerName'); }}
-                  onBlur={() => { setTimeout(() => { setShowSuggestions(false); }, 200); }}
+                  onChange={setOwnerName}
                   placeholder="Customer name"
                   className={inputCls}
                 />
-                {renderSuggestions('ownerName')}
               </div>
 
               {/* 2. Mobile */}
-              <div className="relative">
+              <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                   Mobile Number <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="tel"
+                <SuggestInput
+                  type="mobile_no"
                   value={mobile}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, '').slice(0, 10);
-                    setMobile(val);
-                    handleSearch(val, 'mobile');
-                  }}
-                  onFocus={() => { if (mobile) setShowSuggestions(true); setActiveField('mobile'); }}
-                  onBlur={() => { setTimeout(() => { setShowSuggestions(false); }, 200); }}
+                  onChange={(val) => setMobile(val.replace(/\D/g, '').slice(0, 10))}
+                  onSelect={handleMobileSelect}
                   placeholder="9876543210"
                   maxLength={10}
                   className={inputCls}
                 />
-                {renderSuggestions('mobile')}
               </div>
 
               {/* 3. Address */}
@@ -530,35 +488,29 @@ export default function CarWash() {
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                   Address / Area
                 </label>
-                <input
-                  type="text"
+                <SuggestInput
+                  type="address_line"
                   value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  onChange={setAddress}
                   placeholder="Address / Area / Landmark..."
                   className={inputCls}
                 />
               </div>
 
               {/* 4. Reg. No */}
-              <div className="relative">
+              <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                   Registration No <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
+                <SuggestInput
+                  type="reg_no"
                   value={regNo}
-                  maxLength={10}
-                  onChange={(e) => {
-                    const val = e.target.value.replace(/[^A-Z0-9]/gi, '').toUpperCase().slice(0, 10);
-                    setRegNo(val);
-                    handleSearch(val, 'regNo');
-                  }}
-                  onFocus={() => { if (regNo) setShowSuggestions(true); setActiveField('regNo'); }}
-                  onBlur={() => { setTimeout(() => { setShowSuggestions(false); }, 200); }}
+                  onChange={(val) => setRegNo(val.replace(/[^A-Z0-9]/gi, '').toUpperCase().slice(0, 10))}
+                  onSelect={handleRegSelect}
                   placeholder="GJ06XX0000"
+                  maxLength={10}
                   className={inputCls}
                 />
-                {renderSuggestions('regNo')}
               </div>
 
               {/* 5. Car Name */}
@@ -566,10 +518,10 @@ export default function CarWash() {
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                   Car Name <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
+                <SuggestInput
+                  type="car_name"
                   value={carName}
-                  onChange={(e) => setCarName(e.target.value)}
+                  onChange={setCarName}
                   placeholder="Swift Dzire, Creta, Fortuner..."
                   className={inputCls}
                 />
@@ -656,19 +608,21 @@ export default function CarWash() {
 
             {/* Save new preset service */}
             <div className="flex gap-2 pt-2 items-center max-w-md">
-              <input
-                type="text"
-                placeholder="Add new wash service preset name..."
-                value={newPresetName}
-                onChange={(e) => setNewPresetName(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                    document.getElementById('btn-add-preset')?.click();
-                  }
-                }}
-                className="flex-grow bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:ring-1 focus:ring-amber-500"
-              />
+              <div className="flex-grow">
+                <SuggestInput
+                  type="service_name"
+                  placeholder="Add new wash service preset name..."
+                  value={newPresetName}
+                  onChange={setNewPresetName}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      document.getElementById('btn-add-preset')?.click();
+                    }
+                  }}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2 px-3 text-xs font-medium text-slate-800 placeholder:text-slate-400 focus:ring-1 focus:ring-amber-500"
+                />
+              </div>
               <button
                 id="btn-add-preset"
                 type="button"
@@ -676,6 +630,7 @@ export default function CarWash() {
                   if (!newPresetName.trim()) return;
                   try {
                     await api.post('/quick-job-cards/quick-services', { service_name: newPresetName.trim() });
+                    recordFieldSuggestions({ service_name: newPresetName });
                     showToast(`Saved "${newPresetName.trim()}" to presets`, 'success');
                     setNewPresetName('');
                     const res = await api.get('/quick-job-cards/quick-services');
@@ -706,11 +661,11 @@ export default function CarWash() {
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
                 <div className="sm:col-span-8">
-                  <input
-                    type="text"
+                  <SuggestInput
+                    type="service_name"
                     placeholder="e.g. Engine Degreasing, Headlight Restoration..."
                     value={customService}
-                    onChange={(e) => setCustomService(e.target.value)}
+                    onChange={setCustomService}
                     className={inputCls}
                   />
                 </div>

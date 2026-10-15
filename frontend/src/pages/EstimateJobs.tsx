@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { useKillSwitchLock } from '../hooks/useKillSwitchLock';
+import SuggestInput, { recordFieldSuggestions } from '../components/shared/SuggestInput';
 
 interface EstService { id?: number; service_name: string; item_type: string; part_code?: string; qty: number; rate: number; amount: number; hsn_sac?: string; }
 interface Estimate {
@@ -133,6 +134,15 @@ export default function EstimateJobs() {
         services: formServices.map(s => ({ ...s, amount: parseFloat(String(s.amount)) || 0, rate: parseFloat(String(s.rate)) || 0 }))
       };
       const res = await api.post('/estimate-jobs', payload);
+      recordFieldSuggestions({
+        client_name: form.customer_name,
+        mobile_no: form.mobile_no,
+        reg_no: form.reg_no,
+        car_name: form.car_name,
+        company_name: form.company_name,
+        gstin: form.gstin,
+        ...formServices.reduce((acc, s) => ({ ...acc, service_name: s.service_name }), {})
+      });
       showToast(`Estimate ${res.data.estimate_no} created — ₹${res.data.total_amount}`);
       setShowCreate(false);
       setForm({ estimate_type: 'non_gst_estimate', customer_name: '', mobile_no: '', reg_no: '', car_name: '', vehicle_make: '', vehicle_model: '', vehicle_variant: '', notes: '', payment_mode: 'cash', gst_percentage: '18', company_name: '', gstin: '' });
@@ -443,18 +453,88 @@ export default function EstimateJobs() {
 
               {/* Customer + Vehicle Info */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                <input placeholder="Customer Name (Optional)" value={form.customer_name} onChange={e => setForm({ ...form, customer_name: e.target.value })}
-                  className="col-span-1 sm:col-span-2 px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-accent/20" />
-                <input placeholder="Mobile No" value={form.mobile_no} onChange={e => setForm({ ...form, mobile_no: e.target.value })}
-                  className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm" />
-                <input placeholder="Reg No" value={form.reg_no} onChange={e => setForm({ ...form, reg_no: e.target.value })}
-                  className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm uppercase" />
-                <input placeholder="Company Name" value={form.company_name} onChange={e => setForm({ ...form, company_name: e.target.value })}
-                  className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm" />
-                <input placeholder="GSTIN" value={form.gstin} onChange={e => setForm({ ...form, gstin: e.target.value })}
-                  className="px-4 py-2.5 border border-gray-200 rounded-xl text-sm uppercase" />
-                <input placeholder="Car Name" value={form.car_name} onChange={e => setForm({ ...form, car_name: e.target.value })}
-                  className="col-span-1 sm:col-span-2 px-4 py-2.5 border border-gray-200 rounded-xl text-sm" />
+                <div className="col-span-1 sm:col-span-2">
+                  <SuggestInput
+                    type="client_name"
+                    placeholder="Customer Name (Optional)"
+                    value={form.customer_name}
+                    onChange={val => setForm(f => ({ ...f, customer_name: val }))}
+                    onLinkedFill={linked => {
+                      setForm(f => ({
+                        ...f,
+                        mobile_no: f.mobile_no || linked.mobile_no || '',
+                        reg_no: f.reg_no || linked.reg_no || '',
+                        car_name: f.car_name || linked.car_name || '',
+                        company_name: f.company_name || linked.company_name || '',
+                        gstin: f.gstin || linked.gstin || '',
+                      }));
+                    }}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-accent/20"
+                  />
+                </div>
+                <div>
+                  <SuggestInput
+                    type="mobile_no"
+                    placeholder="Mobile No"
+                    value={form.mobile_no}
+                    maxLength={10}
+                    onChange={val => setForm(f => ({ ...f, mobile_no: val.replace(/\D/g, '').slice(0, 10) }))}
+                    onLinkedFill={linked => {
+                      setForm(f => ({
+                        ...f,
+                        customer_name: f.customer_name || linked.customer_name || linked.client_name || '',
+                        reg_no: f.reg_no || linked.reg_no || '',
+                        car_name: f.car_name || linked.car_name || '',
+                      }));
+                    }}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm"
+                  />
+                </div>
+                <div>
+                  <SuggestInput
+                    type="reg_no"
+                    placeholder="Reg No"
+                    value={form.reg_no}
+                    maxLength={15}
+                    onChange={val => setForm(f => ({ ...f, reg_no: val.toUpperCase().replace(/[\s\-_]/g, '') }))}
+                    onLinkedFill={linked => {
+                      setForm(f => ({
+                        ...f,
+                        customer_name: f.customer_name || linked.customer_name || linked.client_name || '',
+                        mobile_no: f.mobile_no || linked.mobile_no || '',
+                        car_name: f.car_name || linked.car_name || '',
+                      }));
+                    }}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm uppercase font-mono"
+                  />
+                </div>
+                <div>
+                  <SuggestInput
+                    type="company_name"
+                    placeholder="Company Name"
+                    value={form.company_name}
+                    onChange={val => setForm(f => ({ ...f, company_name: val }))}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm"
+                  />
+                </div>
+                <div>
+                  <SuggestInput
+                    type="gstin"
+                    placeholder="GSTIN"
+                    value={form.gstin}
+                    onChange={val => setForm(f => ({ ...f, gstin: val }))}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm uppercase"
+                  />
+                </div>
+                <div className="col-span-1 sm:col-span-2">
+                  <SuggestInput
+                    type="car_name"
+                    placeholder="Car Name"
+                    value={form.car_name}
+                    onChange={val => setForm(f => ({ ...f, car_name: val }))}
+                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm"
+                  />
+                </div>
               </div>
 
               {/* Vehicle Make/Model/Variant Dropdowns */}
@@ -541,8 +621,13 @@ export default function EstimateJobs() {
                 <div className="space-y-3 max-h-[360px] lg:max-h-[460px] overflow-y-auto pr-1">
                   {formServices.map((svc, i) => (
                     <div key={i} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pb-3 sm:pb-0 border-b sm:border-none border-slate-100">
-                      <input placeholder="Service or Part name *" value={svc.service_name} onChange={e => updateService(i, 'service_name', e.target.value)}
-                        className="flex-1 px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-accent/20" />
+                      <SuggestInput
+                        type="service_name"
+                        placeholder="Service or Part name *"
+                        value={svc.service_name}
+                        onChange={val => updateService(i, 'service_name', val)}
+                        className="flex-1 px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-accent/20"
+                      />
                       <div className="flex items-center gap-2">
                         <input type="number" placeholder="Qty" value={svc.qty} onChange={e => updateService(i, 'qty', e.target.value)}
                           className="w-20 lg:w-24 px-2 py-2.5 border border-gray-200 rounded-xl text-sm font-bold text-center" />
