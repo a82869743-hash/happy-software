@@ -747,9 +747,9 @@ function printConsolidatedBillSheet({
     : new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
   const amountToWord = numberToWordsRupees(totalPending);
 
-  const vehicleSummary =
-    vehicles.map((v: any) => `${v.reg_no}${v.car_name ? ` (${v.car_name})` : ''}`).join(', ') ||
-    'All Registered Vehicles';
+  const uniqueVehiclesCount = new Set(
+    documents.map((doc: any) => (doc.reg_no || '').trim().toUpperCase()).filter(Boolean)
+  ).size || (vehicles && vehicles.length) || 1;
 
   const rowsHtml = documents
     .map((doc: any, idx: number) => {
@@ -803,9 +803,15 @@ function printConsolidatedBillSheet({
           @page { size: A4 portrait; margin: 6mm; }
           * { box-sizing: border-box; }
           html, body { margin: 0; padding: 0; background: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; color: #0f172a; font-size: 10px; line-height: 1.3; }
+          thead { display: table-header-group; }
+          tfoot { display: table-footer-group; }
+          tr { page-break-inside: avoid; }
+          .summary-sec, .footer-sec, .bottom-section { page-break-inside: avoid; }
           @media print {
             body { padding: 0; }
             .sheet-box { border: 1.5px solid #0f172a !important; box-shadow: none !important; }
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid; }
           }
           .sheet-box { border: 1.5px solid #0f172a; border-radius: 6px; padding: 12px 16px; max-width: 800px; margin: 0 auto; box-sizing: border-box; }
           .header-table { width: 100%; border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 8px; }
@@ -823,7 +829,7 @@ function printConsolidatedBillSheet({
           .client-bar { background: #f8fafc; border: 1.2px solid #cbd5e1; border-radius: 6px; padding: 6px 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
           .c-name { font-size: 12px; font-weight: 900; color: #0f172a; }
           .c-phone { font-size: 10px; color: #475569; font-weight: 600; margin-top: 1px; }
-          .c-veh { font-size: 10px; color: #0f172a; font-weight: 700; max-width: 380px; text-align: right; }
+          .c-veh { font-size: 11px; color: #0f172a; font-weight: 800; text-align: right; }
 
           .tbl { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
           .tbl th { background: #0f172a; color: #fff; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 4px 6px; text-align: left; }
@@ -886,11 +892,10 @@ function printConsolidatedBillSheet({
             <div class="client-bar">
               <div>
                 <div class="c-name">Billed To: ${clientName}</div>
-                <div class="c-phone">Phone: ${phone || '—'} &nbsp;•&nbsp; Total Jobs: <strong>${documents.length}</strong></div>
+                <div class="c-phone">Phone: ${phone || '—'}</div>
               </div>
               <div class="c-veh">
-                <span style="font-size: 9px; color: #64748b; font-weight: 600; display: block;">Vehicles Covered:</span>
-                ${vehicleSummary}
+                Total Vehicles: <strong>${uniqueVehiclesCount}</strong> &nbsp;•&nbsp; Total Jobs: <strong>${documents.length}</strong>
               </div>
             </div>
 
@@ -2552,6 +2557,7 @@ export default function CustomerPayments({ defaultView }: { defaultView?: 'histo
   const [viewMode, setViewMode] = useState<'history' | 'outstanding'>(resolveView);
   const [pendingLayout, setPendingLayout] = useState<'client_wise' | 'list'>('client_wise');
   const [expandedClients, setExpandedClients] = useState<Record<string, boolean>>({});
+  const [expandedVehicles, setExpandedVehicles] = useState<Record<string, boolean>>({});
   const [filterCompany, setFilterCompany] = useState<string>('all');
   const [duesSummary, setDuesSummary] = useState<{
     total_count: number;
@@ -3396,23 +3402,54 @@ export default function CustomerPayments({ defaultView }: { defaultView?: 'histo
                                 </div>
 
                                 {/* Vehicles Pills */}
-                                {grp.vehicles.length > 0 && (
-                                  <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-                                    <span className="text-[11px] text-stone-400 font-semibold flex items-center gap-1">
-                                      <span className="material-symbols-outlined text-sm">directions_car</span>
-                                      Vehicles:
-                                    </span>
-                                    {grp.vehicles.map(v => (
-                                      <span
-                                        key={v.reg_no}
-                                        className="inline-flex items-center gap-1 px-2 py-0.5 bg-stone-100 text-stone-800 rounded-md text-[11px] font-mono font-bold"
-                                      >
-                                        <span>{v.reg_no}</span>
-                                        {v.car_name && <span className="text-stone-500 font-sans font-medium text-[10px]">({v.car_name})</span>}
+                                {grp.vehicles.length > 0 && (() => {
+                                  const isVehExpanded = Boolean(expandedVehicles[grp.clientName] || expandedClients[grp.clientName]);
+                                  const visibleVehicles = isVehExpanded ? grp.vehicles : grp.vehicles.slice(0, 3);
+                                  const remainingVehiclesCount = grp.vehicles.length - 3;
+                                  return (
+                                    <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
+                                      <span className="text-[11px] text-stone-400 font-semibold flex items-center gap-1">
+                                        <span className="material-symbols-outlined text-sm">directions_car</span>
+                                        Vehicles ({grp.vehicles.length}):
                                       </span>
-                                    ))}
-                                  </div>
-                                )}
+                                      {visibleVehicles.map(v => (
+                                        <span
+                                          key={v.reg_no}
+                                          className="inline-flex items-center gap-1 px-2 py-0.5 bg-stone-100 text-stone-800 rounded-md text-[11px] font-mono font-bold"
+                                        >
+                                          <span>{v.reg_no}</span>
+                                          {v.car_name && <span className="text-stone-500 font-sans font-medium text-[10px]">({v.car_name})</span>}
+                                        </span>
+                                      ))}
+                                      {!isVehExpanded && remainingVehiclesCount > 0 && (
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setExpandedVehicles(prev => ({ ...prev, [grp.clientName]: true }));
+                                          }}
+                                          className="inline-flex items-center gap-0.5 px-2 py-0.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-md text-[11px] font-bold transition-colors cursor-pointer"
+                                          title="Click to view all vehicles"
+                                        >
+                                          +{remainingVehiclesCount} more
+                                        </button>
+                                      )}
+                                      {isVehExpanded && grp.vehicles.length > 3 && !expandedClients[grp.clientName] && (
+                                        <button
+                                          type="button"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setExpandedVehicles(prev => ({ ...prev, [grp.clientName]: false }));
+                                          }}
+                                          className="inline-flex items-center gap-0.5 px-2 py-0.5 bg-stone-100 hover:bg-stone-200 text-stone-600 rounded-md text-[10px] font-semibold transition-colors cursor-pointer"
+                                          title="Collapse vehicles"
+                                        >
+                                          Show less
+                                        </button>
+                                      )}
+                                    </div>
+                                  );
+                                })()}
 
                                 <div className="text-xs text-stone-500 font-medium">
                                   Total Billed: <span className="font-bold text-stone-700">₹{grp.totalBilled.toLocaleString('en-IN')}</span>
