@@ -1,0 +1,12 @@
+{
+  "name": "happy-car-wash",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Happy Car Wash Garage Management System",
+  "scripts": {
+    "build": "npm --prefix frontend run build",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "start": "npm --prefix backend start"
+  }
+}

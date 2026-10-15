@@ -1,0 +1,4488 @@
+[
+  {
+    "make": "Aston Martin",
+    "model": "Db 11",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "V12"
+    ]
+  },
+  {
+    "make": "Aston Martin",
+    "model": "Rapide",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Luxe"
+    ]
+  },
+  {
+    "make": "Aston Martin",
+    "model": "Vantage",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Coupe"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "A3",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "35 Tdi Premium Plus",
+      "35 Tdi Technology",
+      "35 Tfsi Premium Plus",
+      "35 Tfsi Technology"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "A3 Cabriolet",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "40 Tfsi"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "A4",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Premium Plus 35 Tfsi",
+      "Technology 35 Tfsi",
+      "Premium",
+      "Premium Plus",
+      "Technology"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "A5",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Sportback"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "A5 Cabriolet",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "2.0 Tdi"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "A6",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Premium Plus 45 Tfsi",
+      "Technology 45 Tfsi",
+      "Premium Plus",
+      "Technology"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "A8 L",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "55 Tfsi Quattro"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "A8L",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Celebration",
+      "Technology"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "Q3",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "30 Tdi Premium Fwd",
+      "35 Tdi Quattro Premium Plus",
+      "35 Tdi Quattro Technology",
+      "30 Tfsi Premium",
+      "Premium",
+      "Premium Plus",
+      "Technology"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "Q5",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "35 Tdi Premium Plus",
+      "35 Tdi Technology",
+      "45 Tfsi Premium Plus",
+      "45 Tfsi Technology",
+      "Premium Plus",
+      "Technology"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "Q7",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "45 Tdi Premium Plus",
+      "45 Tdi Technology Pack",
+      "40 Tfsi Quattro Premium Plus",
+      "40 Tfsi Quattro Technology Pack",
+      "45 Tdi Black Styling",
+      "40 Tfsi Quattro Black Styling",
+      "Premium Plus",
+      "Technology"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "Q8",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "55 Tfsi Quattro Tiptronic",
+      "Celebration",
+      "Technology",
+      "RS Q8"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "R8",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "V10 Plus"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "Rs5",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Coupe"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "Rs7",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Sportback"
+    ]
+  },
+  {
+    "make": "Audi",
+    "model": "S5",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Sportback"
+    ]
+  },
+  {
+    "make": "Bajaj",
+    "model": "Qute (Re60)",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "Qcar",
+      "Qcar Cng"
+    ]
+  },
+  {
+    "make": "Bentley",
+    "model": "Bentayga",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "W12",
+      "V8"
+    ]
+  },
+  {
+    "make": "Bentley",
+    "model": "Continental Gt",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Coupe"
+    ]
+  },
+  {
+    "make": "Bentley",
+    "model": "Flying Spur",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "V8",
+      "W12"
+    ]
+  },
+  {
+    "make": "Bentley",
+    "model": "Mulsanne",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Sedan"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "3 Series",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "330i",
+      "320d",
+      "M340i"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "3-Series",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "320D Sport",
+      "320D Luxury Line",
+      "330I M Sport"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "5 Series",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "530i",
+      "520d",
+      "530d"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "5-Series",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "520D Luxury Line",
+      "530D M Sport",
+      "530I M Sport"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "6-Series",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "630D Gt Luxury Line",
+      "630D Gt M Sport",
+      "630I Gt Luxury Line",
+      "620D Gt Luxury Line"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "7 Series",
+    "fuel_types": [
+      "Petrol",
+      "Diesel",
+      "Electric"
+    ],
+    "variants": [
+      "740i",
+      "740d",
+      "i7 xDrive60"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "7-Series",
+    "fuel_types": [
+      "Diesel",
+      "Petrol",
+      "Hybrid"
+    ],
+    "variants": [
+      "730Ld Design Pure Excellence",
+      "730Ld Design Pure Excellence Signature",
+      "730Ld M Sport",
+      "740Li Design Pure Excellence Signature",
+      "745Le Xdrive",
+      "M760Li Xdrive"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "M2 Competition",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Coupe"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "M4",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Coupe"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "M5",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Competition"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "X1",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "Sdrive20D Expedition",
+      "Sdrive20D Xline",
+      "Xdrive20D M Sport",
+      "Sdrive20D M Sport",
+      "Sdrive20I Xline",
+      "sDrive18i",
+      "sDrive18d"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "X3",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "Xdrive 20D Luxury Line",
+      "Xdrive 30I Luxury Line",
+      "Xdrive20D Xline",
+      "xDrive20i",
+      "xDrive20d"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "X4",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "Xdrive20D M Sport X",
+      "Xdrive30D M Sport X",
+      "Xdrive30I M Sport X"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "X5",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "Xdrive30D Sport",
+      "Xdrive30D Xline",
+      "Xdrive40I M Sport",
+      "xDrive40i",
+      "xDrive30d"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "X7",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Xdrive 40I",
+      "Xdrive30D Dpe Signature",
+      "xDrive40i",
+      "xDrive40d"
+    ]
+  },
+  {
+    "make": "BMW",
+    "model": "Z4 Roadster",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Sdrive 20I",
+      "M 40I"
+    ]
+  },
+  {
+    "make": "Bugatti",
+    "model": "Chiron",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "W16",
+      "Sport"
+    ]
+  },
+  {
+    "make": "BYD",
+    "model": "Atto 3",
+    "fuel_types": [
+      "Electric"
+    ],
+    "variants": [
+      "Dynamic",
+      "Premium",
+      "Superior"
+    ]
+  },
+  {
+    "make": "BYD",
+    "model": "e6",
+    "fuel_types": [
+      "Electric"
+    ],
+    "variants": [
+      "GL",
+      "VX"
+    ]
+  },
+  {
+    "make": "BYD",
+    "model": "Seal",
+    "fuel_types": [
+      "Electric"
+    ],
+    "variants": [
+      "Dynamic",
+      "Premium",
+      "Performance"
+    ]
+  },
+  {
+    "make": "Citroen",
+    "model": "Basalt",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "You",
+      "Plus",
+      "Max"
+    ]
+  },
+  {
+    "make": "Citroen",
+    "model": "C3",
+    "fuel_types": [
+      "Petrol",
+      "EV"
+    ],
+    "variants": [
+      "Feel",
+      "Shine"
+    ]
+  },
+  {
+    "make": "Citroen",
+    "model": "C3 Aircross",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "You",
+      "Plus",
+      "Max"
+    ]
+  },
+  {
+    "make": "Citroen",
+    "model": "C5 Aircross",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Shine"
+    ]
+  },
+  {
+    "make": "Datsun",
+    "model": "Go",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "D",
+      "T",
+      "T (O)",
+      "A (O)",
+      "A",
+      "T Vdc",
+      "T (O) Vdc",
+      "T Cvt",
+      "T (O) Cvt"
+    ]
+  },
+  {
+    "make": "Datsun",
+    "model": "Redi-Go",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "D",
+      "T",
+      "A",
+      "S",
+      "1.0 S",
+      "1.0 S Amt"
+    ]
+  },
+  {
+    "make": "DC",
+    "model": "Avanti",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Standard"
+    ]
+  },
+  {
+    "make": "Ferrari",
+    "model": "458 Speciale",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Coupe"
+    ]
+  },
+  {
+    "make": "Ferrari",
+    "model": "458 Spider",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "V8"
+    ]
+  },
+  {
+    "make": "Ferrari",
+    "model": "488 Gtb",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Std",
+      "Spider"
+    ]
+  },
+  {
+    "make": "Ferrari",
+    "model": "812 Superfast",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Superfast"
+    ]
+  },
+  {
+    "make": "Ferrari",
+    "model": "Gtc4 Lusso",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "V8 T",
+      "V12"
+    ]
+  },
+  {
+    "make": "Ferrari",
+    "model": "Portofino",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "V8 Convertible"
+    ]
+  },
+  {
+    "make": "Fiat",
+    "model": "Abarth Avventura",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "1.4 T-Jet"
+    ]
+  },
+  {
+    "make": "Fiat",
+    "model": "Abarth Punto",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "1.4 T-Jet"
+    ]
+  },
+  {
+    "make": "Fiat",
+    "model": "Avventura",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Multijet Dynamic",
+      "Multijet Active",
+      "Multijet Emotion"
+    ]
+  },
+  {
+    "make": "Fiat",
+    "model": "Linea",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Active Fire",
+      "Active Multijet",
+      "Dynamic Multijet",
+      "Emotion Multijet",
+      "T-Jet Emotion"
+    ]
+  },
+  {
+    "make": "Fiat",
+    "model": "Linea Classic",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "1.3 Multijet",
+      "1.4",
+      "Plus 1.3 Multijet"
+    ]
+  },
+  {
+    "make": "Fiat",
+    "model": "Punto Evo",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Dynamic 1.2",
+      "Active Multijet 1.3",
+      "Dynamic Multijet 1.3",
+      "Emotion Multijet 1.3"
+    ]
+  },
+  {
+    "make": "Fiat",
+    "model": "Punto Evo Pure",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "1.2L Fire Dynamic",
+      "1.3"
+    ]
+  },
+  {
+    "make": "Fiat",
+    "model": "Urban Cross",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "1.3 Multijet Active",
+      "1.3 Multijet Dynamic",
+      "1.4 T-Jet Emotion",
+      "1.3 Multijet Emotion"
+    ]
+  },
+  {
+    "make": "Force",
+    "model": "Gurkha",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Xpedition 5 Door",
+      "Xplorer 3 Door",
+      "Xtreme",
+      "Xtreme Abs",
+      "Xpedition 3 Door",
+      "Xplorer 5 Door"
+    ]
+  },
+  {
+    "make": "Ford",
+    "model": "Aspire",
+    "fuel_types": [
+      "Petrol",
+      "Diesel",
+      "CNG"
+    ],
+    "variants": [
+      "1.2 Ti-Vct Ambiente",
+      "1.2 Ti-Vct Trend Plus",
+      "1.2 Ti-Vct Trend",
+      "1.5 Tdci Ambiente",
+      "1.5 Tdci Trend",
+      "1.5 Tdci Trend Plus",
+      "1.5 Tdci Titanium",
+      "1.5 Tdci Titanium Plus",
+      "1.2 Ti-Vct Titanium Plus",
+      "1.2 Ti-Vct Titanium",
+      "1.2 Trend Plus Cng",
+      "1.2 Ti-Vct Blu",
+      "1.5 Tdci Blu"
+    ]
+  },
+  {
+    "make": "Ford",
+    "model": "Ecosport",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "1.5L Ti-Vct Ambiente",
+      "1.5L Ti-Vct Trend",
+      "1.5L Ti-Vct Titanium",
+      "1.5L Ti-Vct Titanium Plus At",
+      "1.5L Tdci Ambiente",
+      "1.5L Tdci Trend",
+      "1.5L Tdci Titanium",
+      "1.5L Tdci Titanium Plus",
+      "1.5L Ti-Vct Titanium Plus",
+      "1.5L Tdci Titanium S",
+      "1.5L Ti-Vct Thunder Edition",
+      "1.5L Tdci Thunder Edition"
+    ]
+  },
+  {
+    "make": "Ford",
+    "model": "Endeavour",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "3.2L 4X4 At Titanium Plus",
+      "2.2L 4X2 At Titanium Plus",
+      "2.2L 4X2 Mt Titanium"
+    ]
+  },
+  {
+    "make": "Ford",
+    "model": "Figo",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Ambiente 1.2 Ti-Vct",
+      "Ambiente 1.5 Tdci",
+      "Titanium 1.2 Ti-Vct",
+      "Titanium1.5 Tdci",
+      "Titanium Blu 1.2 Ti-Vct",
+      "Titanium Blu 1.5 Tdci"
+    ]
+  },
+  {
+    "make": "Ford",
+    "model": "Freestyle",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "1.5L Tdci Ambiente",
+      "1.5L Tdci Titanium",
+      "1.5L Tdci Titanium Plus",
+      "1.2L Ti-Vct Ambiente",
+      "1.2L Ti-Vct Titanium",
+      "1.2L Ti-Vct Titanium Plus",
+      "1.2L Ti-Vct Trend Plus",
+      "1.5L Tdci Trend Plus"
+    ]
+  },
+  {
+    "make": "Ford",
+    "model": "Mustang",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Fastback V8"
+    ]
+  },
+  {
+    "make": "Honda",
+    "model": "Accord",
+    "fuel_types": [
+      "Petrol",
+      "Hybrid"
+    ],
+    "variants": [
+      "2.4 VTi",
+      "3.0 V6",
+      "Hybrid"
+    ]
+  },
+  {
+    "make": "Honda",
+    "model": "Accord Hybrid",
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "variants": [
+      "2.0 At"
+    ]
+  },
+  {
+    "make": "Honda",
+    "model": "Amaze",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "S Cvt Petrol",
+      "E Mt Diesel",
+      "E Mt Petrol",
+      "S Cvt Diesel",
+      "V Cvt Petrol",
+      "V Cvt Diesel",
+      "S Mt Diesel",
+      "Vx Mt Diesel",
+      "V Mt Diesel",
+      "Vx Mt Petrol",
+      "V Mt Petrol",
+      "S Mt Petrol",
+      "Exclusive Edition Diesel",
+      "Exclusive Edition Petrol",
+      "Vx Cvt Diesel",
+      "Vx Cvt Petrol",
+      "Ace Edition Cvt Diesel",
+      "Ace Edition Cvt Petrol",
+      "Ace Edition Mt Diesel",
+      "Ace Edition Mt Petrol"
+    ]
+  },
+  {
+    "make": "Honda",
+    "model": "Brio",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "E",
+      "S",
+      "VX"
+    ]
+  },
+  {
+    "make": "Honda",
+    "model": "Brv",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "E Petrol",
+      "S Petrol",
+      "V Petrol",
+      "Vx Petrol",
+      "V Cvt Petrol",
+      "S Diesel",
+      "V Diesel",
+      "Vx Diesel"
+    ]
+  },
+  {
+    "make": "Honda",
+    "model": "City",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Sv Mt Petrol",
+      "V Mt Petrol",
+      "Vx Mt Petrol",
+      "Vx Cvt Petrol",
+      "Sv Mt Diesel",
+      "V Mt Diesel",
+      "Vx Mt Diesel",
+      "Zx Mt Diesel",
+      "Zx Cvt Petrol",
+      "V Cvt Petrol"
+    ]
+  },
+  {
+    "make": "Honda",
+    "model": "Civic",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "1.8 V Cvt",
+      "1.8 Vx Cvt",
+      "1.8 Zx Cvt",
+      "1.6 Vx Mt",
+      "1.6 Zx Mt",
+      "V",
+      "VX",
+      "ZX"
+    ]
+  },
+  {
+    "make": "Honda",
+    "model": "Cr-V",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "2Wd Petrol Cvt",
+      "2Wd Diesel At",
+      "Awd Diesel At"
+    ]
+  },
+  {
+    "make": "Honda",
+    "model": "CR-V",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "2WD",
+      "4WD",
+      "AWD"
+    ]
+  },
+  {
+    "make": "Honda",
+    "model": "Elevate",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "SV",
+      "V",
+      "VX",
+      "ZX"
+    ]
+  },
+  {
+    "make": "Honda",
+    "model": "Jazz",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "V Petrol",
+      "Vx Cvt",
+      "Vx Petrol",
+      "V Cvt",
+      "S Diesel",
+      "V Diesel",
+      "Vx Diesel",
+      "Exclusive Edition Cvt"
+    ]
+  },
+  {
+    "make": "Honda",
+    "model": "Wr-V",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "Vx Diesel",
+      "Vx Petrol",
+      "S Diesel",
+      "S Petrol",
+      "Edge Plus Edition Diesel",
+      "Edge Plus Edition Petrol",
+      "Exclusive Edition Diesel",
+      "Exclusive Edition Petrol",
+      "V Diesel"
+    ]
+  },
+  {
+    "make": "Honda",
+    "model": "WR-V",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "SV",
+      "VX"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Accent",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "GLE",
+      "GLX",
+      "Executive"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Alcazar",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Prestige",
+      "Platinum",
+      "Signature"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Aura",
+    "fuel_types": [
+      "Petrol",
+      "CNG + Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "E 1.2 Petrol",
+      "S 1.2 Petrol",
+      "S 1.2 Amt Petrol",
+      "Sx 1.2 Petrol",
+      "Sx Plus 1.2 Amt Petrol",
+      "Sx (O) 1.2 Petrol",
+      "S 1.2 Cng Petrol (Cng +",
+      "Sx Plus 1.0 Petrol",
+      "S 1.2 Diesel",
+      "S 1.2 Amt Diesel",
+      "Sx Plus 1.2 Amt Diesel",
+      "Sx (O) 1.2 Diesel"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Creta",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "1.4 Crdi E Plus",
+      "1.6 Vtvt E Plus",
+      "1.6 Vtvt Sx",
+      "1.6 Vtvt Sx (O)",
+      "1.6 Vtvt Sx At",
+      "1.6 Vtvt Sx Dual Tone",
+      "1.4 Crdi S",
+      "1.6 Crdi Sx",
+      "1.6 Crdi Sx (O)",
+      "1.6 Crdi Sx At",
+      "1.6 Crdi Sx Dual Tone",
+      "1.6 Crdi S At",
+      "1.6 Vtvt Sx (O) Executive",
+      "1.6 Crdi Sx (O) Executive",
+      "1.4 Crdi Ex",
+      "1.6 Vtvt Ex",
+      "Sports Edition Petrol",
+      "Sports Edition Diesel"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Elantra",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "S",
+      "Sx",
+      "Sx At",
+      "Sx(O) At"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Elite I20",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Era 1.2",
+      "Era 1.4 Crdi",
+      "Magna Plus",
+      "Magna Plus Crdi",
+      "Sportz Plus",
+      "Sportz Plus Crdi Dual Tone",
+      "Asta (O) 1.2",
+      "Asta (O) Crdi",
+      "Asta (O) Cvt",
+      "Sportz Plus Dual Tone",
+      "Sportz Plus Cvt",
+      "Sportz Plus Crdi"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Eon",
+    "fuel_types": [
+      "Petrol",
+      "LPG"
+    ],
+    "variants": [
+      "D-Lite",
+      "Era+",
+      "Magna+",
+      "Sportz"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Exter",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "EX",
+      "EX(O)",
+      "S",
+      "S(O)",
+      "SX",
+      "SX(O)",
+      "SX(O) Connect"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Grand I10",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "1.2 Kappa Vtvt Magna",
+      "1.2 Kappa Vtvt Sportz",
+      "1.2 Kappa Vtvt Magna At",
+      "1.2 Kappa Vtvt Sportz At",
+      "1.2 Kappa Vtvt Sportz Dual Tone",
+      "1.2 Kappa Vtvt Magna Cng"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Grand i10 Nios",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "Era",
+      "Magna",
+      "Sportz",
+      "Asta"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Grand I10 Nios",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "Magna 1.2 Crdi",
+      "Era 1.2 Vtvt",
+      "Magna 1.2 Vtvt",
+      "Magna Amt 1.2 Vtvt",
+      "Sportz 1.2 Vtvt",
+      "Sportz Amt 1.2 Vtvt",
+      "Sportz Dual Tone 1.2 Vtvt",
+      "Asta 1.2 Vtvt",
+      "Sportz Amt 1.2 Crdi",
+      "Asta 1.2 Crdi"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Grand I10 Prime",
+    "fuel_types": [
+      "Diesel",
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "Era T Crdi",
+      "Era T+ Crdi",
+      "Era T Vtvt",
+      "Era T+ Vtvt",
+      "Era T+ Cng Vtvt",
+      "Era T Cng Vtvt"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "I20 Active",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "1.2 S",
+      "1.2 Sx",
+      "1.2 Sx Dual Tone",
+      "1.4 Sx"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Ioniq 5",
+    "fuel_types": [
+      "Electric"
+    ],
+    "variants": [
+      "RWD"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Kona Electric",
+    "fuel_types": [
+      "Electric"
+    ],
+    "variants": [
+      "Premium",
+      "Premium Dual Tone"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Santro",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "Era Mt",
+      "Magna Mt",
+      "Magna Mt Cng",
+      "Magna Amt",
+      "Sportz Mt",
+      "Sportz Mt Cng",
+      "Sportz Amt",
+      "Asta Mt"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Santro Xing",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "XK",
+      "XL",
+      "XO",
+      "GLS"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Tucson",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "2Wd Mt Diesel",
+      "2Wd Mt Petrol",
+      "2Wd At Gl Diesel",
+      "2Wd At Gl Petrol",
+      "4Wd At Gls Diesel",
+      "2Wd At Gls Petrol",
+      "2Wd At Gl(O) Petrol",
+      "2Wd At Gl(O) Diesel",
+      "Platinum",
+      "Signature"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Venue",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "1.2 Kappa Mt E",
+      "1.0 Turbo Gdi Mt S",
+      "1.4 Crdi Mt E",
+      "1.0 Turbo Gdi Mt Sx",
+      "1.0 Turbo Gdi Mt Sx Dual Tone",
+      "1.0 Turbo Gdi Mt Sx(O)",
+      "1.0 Turbo Gdi Dct S",
+      "1.0 Turbo Gdi Dct Sx Plus",
+      "1.2 Kappa Mt S",
+      "1.4 Crdi Mt S",
+      "1.4 Crdi Mt Sx",
+      "1.4 Crdi Mt Sx Dual Tone",
+      "1.4 Crdi Mt Sx(O)",
+      "E",
+      "S",
+      "S+",
+      "S(O)",
+      "SX",
+      "SX(O)",
+      "N Line N6",
+      "N Line N8"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Verna",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "1.6 Vtvt Sx",
+      "1.6 Crdi Sx",
+      "1.6 Crdi Sx (O)",
+      "1.6 Vtvt Sx (O)",
+      "1.6 Crdi Sx Plus At",
+      "1.6 Vtvt Sx(O) At",
+      "1.4 Vtvt Ex",
+      "1.4 Vtvt E",
+      "1.6 Vtvt Sx (O) Anniversary Edition",
+      "1.6 Vtvt Sx Plus At",
+      "1.6 Crdi Sx(O) At",
+      "1.4 Crdi E",
+      "1.4 Crdi Ex"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Xcent",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "S 1.2",
+      "S At 1.2",
+      "Sx 1.2",
+      "Sx 1.2 (O)",
+      "S 1.2 Crdi",
+      "E",
+      "Sx 1.2 Crdi",
+      "Sx 1.2 Crdi (O)",
+      "E Crdi"
+    ]
+  },
+  {
+    "make": "Hyundai",
+    "model": "Xcent Prime",
+    "fuel_types": [
+      "CNG + Petrol",
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Cng T + (Cng +",
+      "T",
+      "T+",
+      "Cng T (Cng +",
+      "T+ Crdi",
+      "T Crdi"
+    ]
+  },
+  {
+    "make": "Icml",
+    "model": "Extreme",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Ld Di Non Ac 9 Seater Bsiii",
+      "Ld Crdfi Non Ac 9 Seater Bsiv",
+      "Ld Di Ps Ac 9 Seater Bsiii",
+      "Ld Crdfi Ps Ac 9 Seater Bsiii",
+      "Sd Di 9 Seater Bsiii",
+      "Ld Crdfi Ps Ac 9 Seater Bsiv",
+      "Vd Crdfi 7 Seater Bsiii",
+      "Vd Di 7 Seater Bsiii",
+      "Sd Crdfi 9 Seater Bsiv",
+      "Vd Crdfi 7 Seater Bsiv",
+      "Sd Crdfi 9 Seater Bsiii"
+    ]
+  },
+  {
+    "make": "Isuzu",
+    "model": "Dmax V-Cross",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Standard",
+      "High Z",
+      "Z Prestige"
+    ]
+  },
+  {
+    "make": "Isuzu",
+    "model": "Mu-X",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "4X2",
+      "4X4"
+    ]
+  },
+  {
+    "make": "Jaguar",
+    "model": "F-Pace",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "Prestige",
+      "Prestige Petrol"
+    ]
+  },
+  {
+    "make": "Jaguar",
+    "model": "F-Type",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "5.0 Convertible R",
+      "5.0 Coupe R",
+      "Svr Coupe",
+      "Svr Convertible",
+      "2.0L Coupe",
+      "2.0L Convertible",
+      "2.0 Convertible R Dynamic",
+      "2.0 Coupe R Dynamic"
+    ]
+  },
+  {
+    "make": "Jaguar",
+    "model": "Xe",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "S Petrol",
+      "S Diesel",
+      "Se Diesel",
+      "Se Petrol"
+    ]
+  },
+  {
+    "make": "Jaguar",
+    "model": "Xf",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "2.0 Prestige",
+      "2.0 Portfolio",
+      "2.0 Portfolio Diesel",
+      "2.0 Prestige Diesel",
+      "2.0 Pure Diesel"
+    ]
+  },
+  {
+    "make": "Jaguar",
+    "model": "Xj",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "3.0L",
+      "3.0L Portfolio",
+      "50"
+    ]
+  },
+  {
+    "make": "Jeep",
+    "model": "Compass",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "1.4 Limited At",
+      "1.4 Sport",
+      "1.4 Limited (O) At",
+      "2.0 Sport",
+      "2.0 Longitude",
+      "2.0 Longitude (O)",
+      "2.0 Limited",
+      "2.0 Limited (O)",
+      "2.0 Limited 4X4",
+      "2.0 Limited (O) 4X4",
+      "1.4 Limited Plus At Petrol",
+      "2.0 Limited Plus 4X2 Diesel",
+      "2.0 Limited Plus 4X4 Diesel",
+      "2.0 Sport Plus",
+      "1.4 Sport Plus",
+      "1.4 Longitude (O) At",
+      "1.4 Limited (O) At Petrol Black Pack",
+      "2.0 Limited (O) Black Pack",
+      "2.0 Limited (O) 4X4 Black Pack",
+      "2.0 Limited Plus 4X4 At",
+      "2.0 Longitude 4X4 At"
+    ]
+  },
+  {
+    "make": "Jeep",
+    "model": "Compass Trailhawk",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "2.0 Trailhawk 4X4 At",
+      "2.0 Trailhawk (O) 4X4 At"
+    ]
+  },
+  {
+    "make": "Jeep",
+    "model": "Grand Cherokee",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "Limited",
+      "Summit",
+      "Srt",
+      "Summit Petrol"
+    ]
+  },
+  {
+    "make": "Jeep",
+    "model": "Wrangler",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Unlimited"
+    ]
+  },
+  {
+    "make": "Kia",
+    "model": "Carens",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Premium",
+      "Prestige",
+      "Prestige Plus",
+      "Luxury",
+      "Luxury Plus",
+      "X-Line"
+    ]
+  },
+  {
+    "make": "Kia",
+    "model": "Carnival",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Premium 7 Str",
+      "Premium 8 Str",
+      "Prestige 7 Str",
+      "Prestige 9 (6+3) Str",
+      "Limousine 7 Str",
+      "Limousine",
+      "Limousine Plus"
+    ]
+  },
+  {
+    "make": "Kia",
+    "model": "EV6",
+    "fuel_types": [
+      "Electric"
+    ],
+    "variants": [
+      "GT Line",
+      "GT Line AWD"
+    ]
+  },
+  {
+    "make": "Kia",
+    "model": "Seltos",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Hte 1.5",
+      "Htk 1.5",
+      "Htk Plus 1.5",
+      "Htx 1.5",
+      "Htx Cvt 1.5",
+      "Hte 1.5 Diesel",
+      "Htk 1.5 Diesel",
+      "Htk Plus 1.5 Diesel",
+      "Htk Plus At 1.5 Diesel",
+      "Htx Plus 1.5 Diesel",
+      "Htx Plus At 1.5 Diesel",
+      "Gtk 1.4",
+      "Gtx 1.4",
+      "Gtx At 1.4",
+      "Gtx Plus 1.4",
+      "Htx 1.5 Diesel"
+    ]
+  },
+  {
+    "make": "Lamborghini",
+    "model": "Aventador",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Lp 700-4",
+      "Lp700-4 Roadster",
+      "S"
+    ]
+  },
+  {
+    "make": "Lamborghini",
+    "model": "Huracan",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Lp 610-4",
+      "Lp 580-2",
+      "Avio",
+      "Performante",
+      "Lp 580-2 Spyder",
+      "Lp 610-4 Spyder",
+      "Evo",
+      "Evo Spyder",
+      "Evo Rwd"
+    ]
+  },
+  {
+    "make": "Lamborghini",
+    "model": "Urus",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "V8"
+    ]
+  },
+  {
+    "make": "Land Rover",
+    "model": "Defender",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "90",
+      "110",
+      "130",
+      "SE",
+      "HSE",
+      "X-Dynamic"
+    ]
+  },
+  {
+    "make": "Land Rover",
+    "model": "Discovery",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "3.0 Hse Diesel",
+      "3.0 Se Diesel",
+      "3.0 Hse Petrol",
+      "3.0 Se Petrol",
+      "3.0 S Diesel",
+      "3.0 S Petrol",
+      "3.0 Hse Luxury Diesel",
+      "3.0 Hse Luxury Petrol"
+    ]
+  },
+  {
+    "make": "Land Rover",
+    "model": "Discovery Sport",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "S",
+      "R-Dynamic Se"
+    ]
+  },
+  {
+    "make": "Land Rover",
+    "model": "Range",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "5.0L V8 Autobiography Petrol",
+      "5.0L V8 Svautobiography Dynamic Petrol",
+      "3.0L V6 Vogue Lwb Petrol",
+      "5.0L V8 Svautobiography Lwb Petrol",
+      "3.0L Tdv6 Vogue Diesel",
+      "3.0L Tdv6 Vogue Lwb Diesel",
+      "4.4L Sdv8 Autobiography Lwb Diesel",
+      "4.4L Sdv8 Svautobiography Lwb Diesel",
+      "4.4L Sdv8 Vogue Se Lwb Diesel",
+      "3.0L V6 Vogue Se Lwb Petrol"
+    ]
+  },
+  {
+    "make": "Land Rover",
+    "model": "Range Evoque",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "S",
+      "Se R-Dynamic",
+      "S Petrol",
+      "Se R-Dynamic Petrol"
+    ]
+  },
+  {
+    "make": "Land Rover",
+    "model": "Range Evoque Convertible",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "2.0 Hse Dynamic"
+    ]
+  },
+  {
+    "make": "Land Rover",
+    "model": "Range Rover",
+    "fuel_types": [
+      "Petrol",
+      "Diesel",
+      "Hybrid"
+    ],
+    "variants": [
+      "SE",
+      "HSE",
+      "Autobiography",
+      "SV"
+    ]
+  },
+  {
+    "make": "Land Rover",
+    "model": "Range Rover Evoque",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Dynamic SE"
+    ]
+  },
+  {
+    "make": "Land Rover",
+    "model": "Range Rover Sport",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Dynamic SE",
+      "Dynamic HSE",
+      "Autobiography"
+    ]
+  },
+  {
+    "make": "Land Rover",
+    "model": "Range Rover Velar",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Dynamic HSE"
+    ]
+  },
+  {
+    "make": "Land Rover",
+    "model": "Range Sport",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "5.0L V8 Svr Petrol",
+      "2.0L S Petrol",
+      "2.0L Se Petrol",
+      "3.0L V6 Se Petrol",
+      "2.0L Hse Petrol",
+      "3.0L V6 Hse Petrol",
+      "5.0L V8 Autobiography Dynamic Petrol",
+      "3.0L Tdv6 S Diesel",
+      "3.0L Tdv6 Se Diesel",
+      "4.4L Sdv8 Hse Diesel"
+    ]
+  },
+  {
+    "make": "Land Rover",
+    "model": "Range Velar",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "2.0 Diesel R-Dynamic S",
+      "2.0 Petrol R-Dynamic S"
+    ]
+  },
+  {
+    "make": "Lexus",
+    "model": "Es",
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "variants": [
+      "300H"
+    ]
+  },
+  {
+    "make": "Lexus",
+    "model": "Lc 500H",
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "variants": [
+      "Coupe"
+    ]
+  },
+  {
+    "make": "Lexus",
+    "model": "Ls 500H",
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "variants": [
+      "Luxury",
+      "Ultra Luxury",
+      "Distinct"
+    ]
+  },
+  {
+    "make": "Lexus",
+    "model": "Lx 450D",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "V8"
+    ]
+  },
+  {
+    "make": "Lexus",
+    "model": "Lx 570",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "V8"
+    ]
+  },
+  {
+    "make": "Lexus",
+    "model": "Nx 300H",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "F-Sport",
+      "Luxury"
+    ]
+  },
+  {
+    "make": "Lexus",
+    "model": "Rx 450H",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "450Hl Luxury"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Alturas G4",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "2Wd At",
+      "4Wd At"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Bolero",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Zlx",
+      "Slx",
+      "Sle",
+      "Ex",
+      "Ex Non Ac",
+      "B4",
+      "B6",
+      "B6 Opt"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Bolero Neo",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "N4",
+      "N8",
+      "N10",
+      "N10 Option"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Bolero Power Plus",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Zlx",
+      "Slx",
+      "Sle",
+      "Lx",
+      "Plus Ac Bs4 Ps",
+      "Plus Non Ac Bs4 Ps"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "E Verito",
+    "fuel_types": [
+      "Electric"
+    ],
+    "variants": [
+      "D4",
+      "D2",
+      "D6"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "E2O Plus",
+    "fuel_types": [
+      "Electric"
+    ],
+    "variants": [
+      "P4",
+      "P6"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Kuv100 Nxt",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "K2 6Str",
+      "K2+ 6Str",
+      "K2 D 6Str",
+      "K2+ D 6Str",
+      "K4+ D 6Str",
+      "K4+ 6Str",
+      "K6+ 6Str",
+      "K6+ D 6Str",
+      "K8 6Str",
+      "K8 D 6Str",
+      "K8 6 Str Dual Tone",
+      "K8 D 6 Str Dual Tone",
+      "K4+ 5Str",
+      "K6+ 5Str",
+      "K8 5Str",
+      "K4+ D 5Str",
+      "K6+ D 5Str",
+      "K8 D 5Str",
+      "K2 D 5Str Taxi",
+      "K2 D 6Str Taxi",
+      "K2 5Str Cng Taxi",
+      "K2 6Str Cng Taxi"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "KUV100 NXT",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "K2+",
+      "K4+",
+      "K6+",
+      "K8"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Marazzo",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "M2 7 Str",
+      "M4 7 Str",
+      "M6 7 Str",
+      "M8 7 Str",
+      "M2 8 Str",
+      "M4 8 Str",
+      "M6 8 Str",
+      "M8 8 Str",
+      "M2",
+      "M4+",
+      "M6+"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Nuvosport",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "N4",
+      "N6",
+      "N8",
+      "N4 +",
+      "N6 Amt",
+      "N8 Amt"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Scorpio",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "S3 2Wd",
+      "4Wd Getaway",
+      "2Wd Getaway",
+      "S5 2Wd",
+      "S7 120 2Wd",
+      "S7 140 2Wd",
+      "S11 2Wd",
+      "S11 4Wd",
+      "S9 2Wd"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Scorpio Classic",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "S",
+      "S11"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Thar",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Crde",
+      "700 Special Edition",
+      "Crde Abs"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Thar Roxx",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "MX1",
+      "MX3",
+      "AX3L",
+      "MX5",
+      "AX5L",
+      "AX7L"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Tuv300",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "T4 Plus",
+      "T6 Plus",
+      "T8",
+      "T10",
+      "T10 (O)",
+      "T10 Dual Tone",
+      "T10 (O) Dual Tone"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Tuv300 Plus",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "P4",
+      "P6",
+      "P8"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Verito",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "1.5 D2",
+      "1.5 D4 Bs-Iv",
+      "1.5 D6 Bs-Iv"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Verito Vibe",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "D2",
+      "D4",
+      "D6"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Xuv300",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "1.2 W4",
+      "1.2 W6",
+      "1.2 W8",
+      "1.2 W8(O)",
+      "1.5 W4",
+      "1.5 W6",
+      "1.5 W8",
+      "1.5 W8 (O)",
+      "1.5 W8 Amt",
+      "1.5 W8 (O) Amt",
+      "1.5 W6 Amt"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "XUV3XO",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "MX1",
+      "MX2",
+      "MX3",
+      "AX5",
+      "AX7",
+      "AX7L"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "XUV400 EV",
+    "fuel_types": [
+      "EV"
+    ],
+    "variants": [
+      "EC Pro",
+      "EL Pro"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Xuv500",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "G At",
+      "W7",
+      "W7 At",
+      "W9",
+      "W9 At",
+      "W11",
+      "W11 At",
+      "W11 (O)",
+      "W11 (O) At",
+      "W11 (O) Awd",
+      "W11 (O) Awd At",
+      "W3"
+    ]
+  },
+  {
+    "make": "Mahindra",
+    "model": "Xylo",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "D2 Bs-Iv",
+      "D4 Bs-Iv",
+      "H4 Bs-Iv",
+      "H4 Abs Bs-Iv",
+      "H8 Abs Airbags Bs-Iv",
+      "D2",
+      "D4",
+      "E4",
+      "E8",
+      "H4",
+      "H8"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Alto",
+    "fuel_types": [
+      "Petrol",
+      "CNG + Petrol"
+    ],
+    "variants": [
+      "Std",
+      "Std (O)",
+      "Lxi",
+      "Lxi (O)",
+      "Vxi",
+      "Lxi Cng (Cng +",
+      "Lxi (O) Cng (Cng +",
+      "Vxi Plus"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Alto 800",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "Std",
+      "LXi",
+      "VXi"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Alto 800 Tour",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "H1",
+      "H1 (O)"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Alto K10",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "Lxi",
+      "Vxi",
+      "Lx",
+      "Vxi (O)",
+      "Lxi Cng (O)",
+      "Vxi Amt (O)"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Baleno",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "1.3 Delta",
+      "1.3 Alpha",
+      "1.3 Sigma",
+      "1.3 Zeta",
+      "1.2 Alpha",
+      "1.2 Alpha Cvt",
+      "1.2 Delta",
+      "1.2 Delta Cvt",
+      "1.2 Sigma",
+      "1.2 Zeta",
+      "1.2 Delta Dualjet",
+      "1.2 Zeta Dualjet",
+      "1.2 Zeta Cvt"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Baleno Rs",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Rs 1.0"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Celerio",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "Lxi",
+      "Vxi",
+      "Vxi At",
+      "Zxi",
+      "Zxi (Opt)",
+      "Vxi Cng Mt",
+      "Zxi Ags",
+      "Lxi Mt (O)",
+      "Vxi (O) Mt",
+      "Vxi (O) Ags",
+      "Zxi (O) Ags"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Celerio Tour",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "H2",
+      "H2 Cng"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Celerio X",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Vxi (O)",
+      "Vxi",
+      "Vxi Amt",
+      "Vxi Amt (O)",
+      "Zxi",
+      "Zxi (O)",
+      "Zxi Amt",
+      "Zxi Amt (O)"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Ciaz",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "1.3L Alpha Smart Hybrid",
+      "1.3L Sigma Smart Hybrid",
+      "1.3L Delta Smart Hybrid",
+      "1.3L Zeta Smart Hybrid",
+      "1.5L Sigma Smart Hybrid",
+      "1.5L Delta Smart Hybrid",
+      "1.5L Zeta Smart Hybrid",
+      "1.5L Alpha Smart Hybrid",
+      "1.5L Delta At Smart Hybrid",
+      "1.5L Zeta At Smart Hybrid",
+      "1.5L Alpha At Smart Hybrid",
+      "1.5L Alpha",
+      "1.5L Delta",
+      "1.5L Zeta",
+      "Sigma",
+      "Delta",
+      "Zeta",
+      "Alpha"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Dzire",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Lxi",
+      "Vxi",
+      "Ldi",
+      "Zxi",
+      "Vdi",
+      "Vxi Amt",
+      "Zdi Amt",
+      "Zdi",
+      "Zxi Plus",
+      "Zxi At",
+      "Zxi Plus Amt",
+      "Zdi Plus",
+      "Vdi Amt",
+      "Zdi Plus Amt"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Dzire Tour",
+    "fuel_types": [
+      "Diesel",
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "Ldi",
+      "Lxi",
+      "Lxi Cng"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Eeco",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "5 Str",
+      "7 Str",
+      "5 Str With Ac+Htr",
+      "5 Str With Ac+Htr Cng",
+      "5 Str With Htr Cng"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Ertiga",
+    "fuel_types": [
+      "Petrol",
+      "Diesel",
+      "CNG + Petrol"
+    ],
+    "variants": [
+      "Lxi",
+      "Zxi",
+      "Vxi At",
+      "Zxi Plus",
+      "Vxi",
+      "Zxi At",
+      "1.5L Vdi",
+      "1.5L Zdi",
+      "1.5L Zdi Plus",
+      "Vxi Cng (Cng +"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Fronx",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "Sigma",
+      "Delta",
+      "Delta+",
+      "Zeta",
+      "Alpha"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Gypsy",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Hard Top",
+      "Soft Top"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Ignis",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Alpha 1.2 Amt",
+      "Alpha 1.2 Mt",
+      "Delta 1.2 Amt",
+      "Delta 1.2 Mt",
+      "Sigma 1.2 Mt",
+      "Zeta 1.2 Amt",
+      "Zeta 1.2 Mt",
+      "Sigma",
+      "Delta",
+      "Zeta",
+      "Alpha"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Invicto",
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "variants": [
+      "Zeta+",
+      "Alpha+"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Jimny",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Zeta",
+      "Alpha"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Omni",
+    "fuel_types": [
+      "Petrol",
+      "LPG"
+    ],
+    "variants": [
+      "5 Str Bs-Iv",
+      "E 8 Str Bs-Iv",
+      "5-Seater",
+      "8-Seater",
+      "Cargo",
+      "Ambulance"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Ritz",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "LXi",
+      "VXi",
+      "ZXi",
+      "LDi",
+      "VDi",
+      "ZDi"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "S-Cross",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "1.3L Sigma",
+      "1.3L Delta",
+      "1.3L Zeta",
+      "1.3L Alpha",
+      "Sigma",
+      "Delta",
+      "Zeta",
+      "Alpha"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "S-Presso",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "Std",
+      "Std (O)",
+      "Lxi",
+      "Lxi (O)",
+      "Vxi",
+      "Vxi (O)",
+      "Vxi Ags",
+      "Vxi+",
+      "Vxi (O) Ags",
+      "Vxi+ Ags",
+      "LXi",
+      "VXi",
+      "VXi+"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Swift",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Lxi",
+      "Vxi",
+      "Vxi Amt",
+      "Zxi",
+      "Zxi Amt",
+      "Zxi Plus",
+      "Ldi",
+      "Vdi",
+      "Vdi Amt",
+      "Zdi",
+      "Zdi Amt",
+      "Zdi Plus",
+      "Zxi Plus Amt",
+      "Zdi Plus Amt"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Vitara Brezza",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Ldi",
+      "Vdi",
+      "Zdi",
+      "Zdi+",
+      "Zdi+ Dual Tone",
+      "Zdi+ Ags",
+      "Vdi Ags",
+      "Zdi Ags",
+      "Zdi+ Dual Tone Ags"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Wagon",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "Vxi",
+      "Vxi Ags",
+      "1.2L Zxi",
+      "Lxi",
+      "1.2L Vxi",
+      "1.2L Vxi Ags",
+      "1.2L Zxi Ags",
+      "Lxi (O)",
+      "Vxi (O)",
+      "1.2L Vxi (O)",
+      "1.2L Vxi Ags (O)",
+      "Vxi Ags (O)",
+      "Lxi Cng",
+      "Lxi (O) Cng"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Wagon R",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "LXi",
+      "VXi",
+      "ZXi",
+      "ZXi+"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Xl6",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Zeta Mt",
+      "Alpha Mt",
+      "Zeta At",
+      "Alpha At"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "XL6",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "Zeta",
+      "Zeta+",
+      "Alpha",
+      "Alpha+"
+    ]
+  },
+  {
+    "make": "Maruti Suzuki",
+    "model": "Zen Estilo",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "LX",
+      "LXi",
+      "VXi"
+    ]
+  },
+  {
+    "make": "Maserati",
+    "model": "Ghibli",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Diesel",
+      "Gransport",
+      "Granlusso"
+    ]
+  },
+  {
+    "make": "Maserati",
+    "model": "Grancabrio",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Standard"
+    ]
+  },
+  {
+    "make": "Maserati",
+    "model": "Granturismo",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Sport"
+    ]
+  },
+  {
+    "make": "Maserati",
+    "model": "Levante",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Diesel",
+      "Gransport",
+      "Granlusson"
+    ]
+  },
+  {
+    "make": "Maserati",
+    "model": "Quattroporte",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Granlusso"
+    ]
+  },
+  {
+    "make": "Mercedes-Benz",
+    "model": "C-Class",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "C 200",
+      "C 220d",
+      "C 300d"
+    ]
+  },
+  {
+    "make": "Mercedes-Benz",
+    "model": "E-Class",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "E 200",
+      "E 220d",
+      "E 350d",
+      "E 450"
+    ]
+  },
+  {
+    "make": "Mercedes-Benz",
+    "model": "G-Class (G-Wagon)",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "G 400d",
+      "AMG G 63"
+    ]
+  },
+  {
+    "make": "Mercedes-Benz",
+    "model": "GLC",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "GLC 200",
+      "GLC 220d"
+    ]
+  },
+  {
+    "make": "Mercedes-Benz",
+    "model": "GLE",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "GLE 300d",
+      "GLE 450",
+      "GLE 450d"
+    ]
+  },
+  {
+    "make": "Mercedes-Benz",
+    "model": "GLS",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "GLS 450",
+      "GLS 450d",
+      "Maybach GLS 600"
+    ]
+  },
+  {
+    "make": "Mercedes-Benz",
+    "model": "S-Class",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "S 350d",
+      "S 450",
+      "Maybach S 580",
+      "Maybach S 680"
+    ]
+  },
+  {
+    "make": "MG",
+    "model": "Astor",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Style",
+      "Super",
+      "Smart",
+      "Sharp",
+      "Savvy"
+    ]
+  },
+  {
+    "make": "MG",
+    "model": "Comet EV",
+    "fuel_types": [
+      "Electric"
+    ],
+    "variants": [
+      "Executive",
+      "Excite",
+      "Exclusive"
+    ]
+  },
+  {
+    "make": "MG",
+    "model": "Gloster",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Sharp",
+      "Savvy"
+    ]
+  },
+  {
+    "make": "MG",
+    "model": "Hector",
+    "fuel_types": [
+      "Petrol",
+      "Diesel",
+      "Hybrid"
+    ],
+    "variants": [
+      "1.5L Style",
+      "2.0L Style",
+      "2.0L Super",
+      "2.0L Smart",
+      "2.0L Sharp",
+      "1.5L Super",
+      "1.5L Super Hybrid",
+      "1.5L Sharp Hybrid",
+      "1.5L Smart Hybrid",
+      "1.5L Smart Dct",
+      "1.5L Sharp Dct"
+    ]
+  },
+  {
+    "make": "MG",
+    "model": "Zs Ev",
+    "fuel_types": [
+      "Electric"
+    ],
+    "variants": [
+      "Excite",
+      "Exclusive"
+    ]
+  },
+  {
+    "make": "MG",
+    "model": "ZS EV",
+    "fuel_types": [
+      "Electric"
+    ],
+    "variants": [
+      "Executive",
+      "Excite Pro",
+      "Exclusive Plus",
+      "Essence"
+    ]
+  },
+  {
+    "make": "Mini",
+    "model": "Clubman",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Cooper S"
+    ]
+  },
+  {
+    "make": "Mini",
+    "model": "Convertible",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Cooper S"
+    ]
+  },
+  {
+    "make": "Mini",
+    "model": "Cooper 3 Door",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "Cooper D",
+      "Cooper S"
+    ]
+  },
+  {
+    "make": "Mini",
+    "model": "Cooper 5 Door",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Cooper D"
+    ]
+  },
+  {
+    "make": "Mini",
+    "model": "Countryman",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Cooper S",
+      "Cooper Sd",
+      "Cooper S Jcw Inspired",
+      "Black Edition"
+    ]
+  },
+  {
+    "make": "Mini",
+    "model": "John Cooper Works",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Hatch"
+    ]
+  },
+  {
+    "make": "Mitsubishi",
+    "model": "Montero",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "3.2 At"
+    ]
+  },
+  {
+    "make": "Mitsubishi",
+    "model": "Outlander",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "2.4L Outlander"
+    ]
+  },
+  {
+    "make": "Mitsubishi",
+    "model": "Pajero Sport",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "2.5 Mt",
+      "2.5 At",
+      "Limited Edition",
+      "Select Plus Mt",
+      "Select Plus At"
+    ]
+  },
+  {
+    "make": "Nissan",
+    "model": "Gtr",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "3.8 V6"
+    ]
+  },
+  {
+    "make": "Nissan",
+    "model": "Kicks",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Xl Petrol",
+      "Xv Petrol",
+      "Xl Diesel",
+      "Xv Diesel",
+      "Xv Premium",
+      "Xv Premium (O)",
+      "Xv Premium (O) Dual Tone",
+      "Xe Diesel"
+    ]
+  },
+  {
+    "make": "Nissan",
+    "model": "Micra",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Xl (O) Cvt",
+      "Xv Cvt",
+      "Xld (O)",
+      "Xvd"
+    ]
+  },
+  {
+    "make": "Nissan",
+    "model": "Micra Active",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Xl",
+      "Xv",
+      "Xl (O)"
+    ]
+  },
+  {
+    "make": "Nissan",
+    "model": "Sunny",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Xe Petrol",
+      "Xl Petrol",
+      "Xl Diesel",
+      "Xv Diesel",
+      "Xe Diesel",
+      "Xv Cvt",
+      "Special Edition Diesel"
+    ]
+  },
+  {
+    "make": "Nissan",
+    "model": "Terrano",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "Xe D 85Ps",
+      "Xv D Premium 110 Ps Amt",
+      "Xl (P)",
+      "Xl D(O)",
+      "Xv D Premium 110 Ps",
+      "Sport Edition"
+    ]
+  },
+  {
+    "make": "Porsche",
+    "model": "718",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Boxster",
+      "Cayman"
+    ]
+  },
+  {
+    "make": "Porsche",
+    "model": "911",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Carrera S",
+      "Carrera S Cabriolet"
+    ]
+  },
+  {
+    "make": "Porsche",
+    "model": "Cayenne",
+    "fuel_types": [
+      "Hybrid",
+      "Petrol"
+    ],
+    "variants": [
+      "E-Hybrid",
+      "Turbo",
+      "Base"
+    ]
+  },
+  {
+    "make": "Porsche",
+    "model": "Cayenne Coupe",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Base",
+      "Turbo"
+    ]
+  },
+  {
+    "make": "Porsche",
+    "model": "Macan",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "S",
+      "Base"
+    ]
+  },
+  {
+    "make": "Porsche",
+    "model": "Panamera",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Turbo",
+      "Turbo Executive",
+      "Turbo Sport Turismo"
+    ]
+  },
+  {
+    "make": "Premier",
+    "model": "Rio",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Gx",
+      "Ex",
+      "Glx",
+      "Dx",
+      "Lx",
+      "Crdi4"
+    ]
+  },
+  {
+    "make": "Renault",
+    "model": "Captur",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Rxe Petrol",
+      "Rxe Diesel",
+      "Platine Diesel Dual Tone",
+      "Platine Petrol Dual Tone"
+    ]
+  },
+  {
+    "make": "Renault",
+    "model": "Duster",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Rxe Petrol",
+      "Rxs Petrol",
+      "Rxs (Opt) Cvt",
+      "85 Ps Rxe Mt Diesel",
+      "85 Ps Rxs Mt Diesel",
+      "110 Ps Rxs Mt Diesel",
+      "110 Ps Rxz Mt Diesel",
+      "110 Ps Rxz Amt Diesel",
+      "110 Ps Rxs Awd (Opt) Diesel"
+    ]
+  },
+  {
+    "make": "Renault",
+    "model": "Kwid",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Rxe 0.8",
+      "Std 0.8",
+      "Rxl 0.8",
+      "Rxt 0.8",
+      "Rxt 1.0",
+      "Climber 1.0 Mt",
+      "Rxt Amt 1.0",
+      "Climber Amt 1.0",
+      "Rxt (O) 1.0",
+      "Rxt (O) Amt 1.0",
+      "Climber (O) Mt 1.0",
+      "Climber (O) Amt 1.0"
+    ]
+  },
+  {
+    "make": "Renault",
+    "model": "Lodgy",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "85 Ps Std",
+      "85 Ps Rxe 8 Seater",
+      "Stepway Rxz 110Ps 8-Seater",
+      "Stepway Rxz 110Ps 7-Seater",
+      "Stepway Rxl 85Ps 8-Seater",
+      "Stepway Rxz 85Ps 8-Seater",
+      "85 Ps Rxe 7 Seater"
+    ]
+  },
+  {
+    "make": "Renault",
+    "model": "Triber",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Rxe",
+      "Rxl",
+      "Rxt",
+      "Rxz"
+    ]
+  },
+  {
+    "make": "Skoda",
+    "model": "Fabia",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Classic",
+      "Ambiente",
+      "Elegance"
+    ]
+  },
+  {
+    "make": "Skoda",
+    "model": "Kodiaq",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Style 2.0 Tdi 4X4 At",
+      "Laurin And Klement",
+      "Corporate Edition"
+    ]
+  },
+  {
+    "make": "Skoda",
+    "model": "Kodiaq Scout",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "2.0 Tdi At"
+    ]
+  },
+  {
+    "make": "Skoda",
+    "model": "Laura",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Ambition",
+      "Elegance",
+      "L&K",
+      "vRS"
+    ]
+  },
+  {
+    "make": "Skoda",
+    "model": "Monte Carlo",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "Monte Carlo 1.5 Tdi At",
+      "Monte Carlo 1.6 Mpi At",
+      "Monte Carlo 1.5 Tdi Mt",
+      "Monte Carlo 1.6 Mpi Mt"
+    ]
+  },
+  {
+    "make": "Skoda",
+    "model": "Octavia",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Ambition 1.4 Tsi",
+      "Ambition 2.0 Tdi Cr",
+      "Style 1.4 Tsi",
+      "Style 1.8 Tsi At",
+      "Style 2.0 Tdi Cr",
+      "Style 2.0 Tdi Cr At",
+      "L & K 1.8 Tsi At",
+      "L & K 2.0 Tdi Cr At",
+      "Corporate Edition 1.4 Tsi",
+      "Corporate Edition 2.0 Tdi",
+      "Onyx 1.8 Tsi Dsg",
+      "Onyx 2.0 Tdi Dsg",
+      "Style",
+      "L&K",
+      "vRS"
+    ]
+  },
+  {
+    "make": "Skoda",
+    "model": "Rapid",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "1.6 Mpi Ambition",
+      "1.5 Tdi Cr Active",
+      "1.6 Mpi Active",
+      "1.5 Tdi Cr Ambition",
+      "1.5 Tdi Cr Ambition At",
+      "1.6 Mpi Style At",
+      "1.5 Tdi Cr Style At",
+      "1.5 Tdi Cr Style",
+      "1.6 Mpi Style",
+      "1.6 Mpi Ambition At",
+      "Onyx Mt Petrol",
+      "Onyx At Petrol",
+      "Onyx Mt Diesel",
+      "Onyx At Diesel",
+      "Active",
+      "Ambition",
+      "Style",
+      "Monte Carlo"
+    ]
+  },
+  {
+    "make": "Skoda",
+    "model": "Slavia",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Active",
+      "Ambition",
+      "Style",
+      "Monte Carlo"
+    ]
+  },
+  {
+    "make": "Skoda",
+    "model": "Superb",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Style 1.8 Tsi Mt",
+      "Style 1.8 Tsi At",
+      "L & K 1.8 Tsi At",
+      "L & K 2.0 Tdi At",
+      "Style 2.0 Tdi At",
+      "Corporate Edition 1.8 Tsi At",
+      "Corporate Edition 2.0 Tdi At"
+    ]
+  },
+  {
+    "make": "Skoda",
+    "model": "Superb Sportline",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Sportline 1.8L Tsi At",
+      "Sportline 2.0L Tdi At"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Altroz",
+    "fuel_types": [
+      "Petrol",
+      "Diesel",
+      "CNG"
+    ],
+    "variants": [
+      "Xe Petrol",
+      "Xm Petrol",
+      "Xt Petrol",
+      "Xz Petrol",
+      "Xz (O) Petrol",
+      "Xe Diesel",
+      "Xm Diesel",
+      "Xt Diesel",
+      "Xz Diesel",
+      "Xz (O) Diesel",
+      "XE",
+      "XM",
+      "XM+",
+      "XT",
+      "XZ",
+      "XZ+"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Bolt",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "Xt Diesel",
+      "Xe Diesel",
+      "Xm Diesel",
+      "Xms Diesel",
+      "Xt Petrol",
+      "Xe Petrol",
+      "Xm Petrol",
+      "Xms Petrol"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Curvv",
+    "fuel_types": [
+      "Petrol",
+      "Diesel",
+      "EV"
+    ],
+    "variants": [
+      "Smart",
+      "Pure",
+      "Creative",
+      "Accomplished",
+      "Empowered"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Harrier",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Revotorq Xe",
+      "Revotorq Xm",
+      "Revotorq Xt",
+      "Revotorq Xz",
+      "Revotorq Xz Dual Tone",
+      "Revotorq Dark Edition"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Hexa",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Xm Plus 4X2",
+      "Xt 4X4",
+      "Xta 4X2",
+      "Xt 4X2",
+      "Xe 4X2",
+      "Xm 4X2",
+      "Xma 4X2",
+      "XE",
+      "XM",
+      "XM+",
+      "XT",
+      "XT 4x4"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Indica EV",
+    "fuel_types": [
+      "EV"
+    ],
+    "variants": [
+      "Std"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Indica Vista",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "LS",
+      "LX",
+      "VX",
+      "ZX"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Indigo Manza",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Aqua",
+      "Aura",
+      "Elan"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Nano Genx",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "Xt",
+      "Xe",
+      "Emax Xm",
+      "Xta",
+      "Xm",
+      "Xma"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Nexon",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Xe",
+      "Xm",
+      "Xz",
+      "Xz Plus",
+      "Xz Plus Dual Tone",
+      "Xz Plus (O)",
+      "Xz Plus (O) Dual Tone",
+      "Xma",
+      "Xza Plus",
+      "Xza Plus Dual Tone",
+      "Xza Plus (O)",
+      "Xza Plus (O) Dual Tone",
+      "Xe Diesel",
+      "Xm Diesel",
+      "Xz Diesel",
+      "Xz Plus Diesel",
+      "Xz Plus Diesel Dual Tone",
+      "Xz Plus (O) Diesel",
+      "Xz Plus (O) Diesel Dual Tone",
+      "Xma Diesel",
+      "Xza Plus Diesel",
+      "Xza Plus Diesel Dual Tone",
+      "Xza Plus (O) Diesel",
+      "Xza Plus (O) Diesel Dual Tone"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Nexon Ev",
+    "fuel_types": [
+      "Electric"
+    ],
+    "variants": [
+      "Xm",
+      "Xz Plus",
+      "Xz Plus Lux"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Safari Storme",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "2.2 Lx 4X2",
+      "2.2 Ex 4X2",
+      "2.2 Vx 4X2 Varicor 400",
+      "2.2 Vx 4X4 Varicor 400"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Sumo Gold",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "CX",
+      "LX",
+      "FX",
+      "GX"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Tiago",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Revotron Xe",
+      "Revotron Xt",
+      "Revotron Xz",
+      "Revotron Xz Plus",
+      "Revotron Xz Plus Dual Tone",
+      "Revotron Xza",
+      "Revotron Xza Plus",
+      "Revotron Xza Plus Dual Tone"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Tiago EV",
+    "fuel_types": [
+      "EV"
+    ],
+    "variants": [
+      "XE",
+      "XT",
+      "XZ+",
+      "XZ+ Tech Lux"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Tiago Nrg",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "1.2L Revotron",
+      "1.05L Revotorq",
+      "1.2L Revotron Amt"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Tigor",
+    "fuel_types": [
+      "Petrol",
+      "CNG",
+      "EV"
+    ],
+    "variants": [
+      "Revotron Xe",
+      "Revotron Xm",
+      "Revotron Xz",
+      "Revotron Xz Plus",
+      "Revotron Xma",
+      "Revotron Xza Plus",
+      "XE",
+      "XM",
+      "XZ",
+      "XZ+"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Tigor Ev",
+    "fuel_types": [
+      "Electric"
+    ],
+    "variants": [
+      "Xm+",
+      "Xt+",
+      "Xe+"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Winger",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "15S"
+    ]
+  },
+  {
+    "make": "Tata",
+    "model": "Zest",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Xe Petrol",
+      "Xe Diesel",
+      "Xm Petrol",
+      "Xms Petrol",
+      "Xt Petrol",
+      "Xm Diesel",
+      "Xms Diesel",
+      "Xt Diesel",
+      "Xma Diesel",
+      "Xta Diesel",
+      "Zest Premio Edition"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Camry",
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "variants": [
+      "Hybrid"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Camry Hybrid",
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "variants": [
+      "2.5 Hybrid"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Corolla Altis",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "G Petrol",
+      "G At Petrol",
+      "Gl Petrol",
+      "Gl Diesel",
+      "G Diesel",
+      "Vl At Petrol",
+      "G",
+      "GL",
+      "VL"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Etios Cross",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "V",
+      "G",
+      "Vd",
+      "Gd",
+      "1.2 X Edition",
+      "1.4 X Edition"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Etios Liva",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "G",
+      "V",
+      "Gd",
+      "Vx",
+      "Vxd",
+      "Vd",
+      "Dual Tone V",
+      "Dual Tone Vd",
+      "Dual Tone Vx",
+      "Dual Tone Vxd",
+      "Gx",
+      "Gxd",
+      "Vx Dual Tone Limited Edition",
+      "Vxd Dual Tone Limited Edition"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Fortuner",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "2.8 4X2 At",
+      "2.8 4X2 Mt",
+      "2.8 4X4 Mt",
+      "2.8 4X4 At",
+      "2.7 4X2 At",
+      "2.7 4X2 Mt",
+      "Trd Celebratory Edition"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Glanza",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "G Hybrid",
+      "V",
+      "G Cvt",
+      "V Cvt",
+      "G Mt"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Hilux",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "STD",
+      "High"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Innova Crysta",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "2.4 Gx 7 Str",
+      "2.4 Vx 7 Str",
+      "2.4 Gx 8 Str",
+      "2.4 Vx 8 Str",
+      "2.4 Zx 7 Str",
+      "2.7 Gx At 8 Str",
+      "2.7 Gx At 7 Str",
+      "2.7 Zx At 7 Str",
+      "2.7 Vx 7 Str",
+      "2.7 Gx Mt 7 Str",
+      "2.7 Gx Mt 8 Str",
+      "Touring Sport 2.4 Vx 7 Str",
+      "Touring Sport 2.7 Vx 7 Str",
+      "Touring Sport 2.7 Zx At 7 Str",
+      "2.4 G Plus 7 Str",
+      "2.4 G Plus 8 Str"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Innova Hycross",
+    "fuel_types": [
+      "Petrol",
+      "Hybrid"
+    ],
+    "variants": [
+      "GX",
+      "GX(O)",
+      "VX",
+      "VX(O)",
+      "ZX",
+      "ZX(O)"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Land Cruiser",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Vx"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Land Cruiser 300",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "ZX"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Land Cruiser Prado",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Vx L"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Platinum Etios",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "G",
+      "V",
+      "Gd",
+      "Vd",
+      "Vxd",
+      "Vx",
+      "Gx",
+      "Gxd",
+      "Vxd Limited Edition",
+      "Vx Limited Edition"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Prius",
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "variants": [
+      "Z8"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Qualis",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "FS",
+      "GS",
+      "RS"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Rumion",
+    "fuel_types": [
+      "Petrol",
+      "CNG"
+    ],
+    "variants": [
+      "S",
+      "G",
+      "V"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Urban Cruiser Hyryder",
+    "fuel_types": [
+      "Petrol",
+      "Hybrid",
+      "CNG"
+    ],
+    "variants": [
+      "E",
+      "S",
+      "G",
+      "V"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Vellfire",
+    "fuel_types": [
+      "Hybrid"
+    ],
+    "variants": [
+      "Hi",
+      "VIP Executive Lounge"
+    ]
+  },
+  {
+    "make": "Toyota",
+    "model": "Yaris",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "J",
+      "G",
+      "V",
+      "Vx Cvt",
+      "G Cvt",
+      "J Cvt",
+      "V Cvt",
+      "Vx",
+      "V (O)",
+      "J (O)",
+      "G (O)",
+      "J (O) Cvt",
+      "G (O) Cvt",
+      "V (O) Cvt"
+    ]
+  },
+  {
+    "make": "Volkswagen",
+    "model": "Ameo",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "Trendline 1.5L Tdi",
+      "Comfortline 1.5L Tdi",
+      "Highline Plus 1.5L Tdi Dsg",
+      "Highline Plus 1.5L Tdi",
+      "Trendline 1.0L",
+      "Comfortline 1.0L",
+      "Highline Plus 1.0L",
+      "Gt Line Tdi Dsg"
+    ]
+  },
+  {
+    "make": "Volkswagen",
+    "model": "Jetta",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Trendline",
+      "Comfortline",
+      "Highline"
+    ]
+  },
+  {
+    "make": "Volkswagen",
+    "model": "Passat",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "2.0 Tdi Comfortline",
+      "2.0 Tdi Highline",
+      "2.0 Tdi Comfortline Connect",
+      "2.0 Tdi Highline Connect",
+      "Comfortline",
+      "Highline"
+    ]
+  },
+  {
+    "make": "Volkswagen",
+    "model": "Polo",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Trendline 1.0L (P)",
+      "Comfortline 1.0 (P)",
+      "Highline Plus 1.0 (P)",
+      "Trendline 1.5L (D)",
+      "Comfortline 1.5 (D)",
+      "Highline Plus 1.5 (D)",
+      "Gt Tsi",
+      "Gt Tdi",
+      "Trendline",
+      "Comfortline",
+      "Highline",
+      "GT TSI",
+      "GT TDI"
+    ]
+  },
+  {
+    "make": "Volkswagen",
+    "model": "Taigun",
+    "fuel_types": [
+      "Petrol"
+    ],
+    "variants": [
+      "Comfortline",
+      "Highline",
+      "Topline",
+      "GT",
+      "GT Edge"
+    ]
+  },
+  {
+    "make": "Volkswagen",
+    "model": "Tiguan",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Comfortline 2.0L Tdi Amt",
+      "Highline 2.0L Tdi Amt"
+    ]
+  },
+  {
+    "make": "Volkswagen",
+    "model": "Vento",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Trendline 1.6 (P)",
+      "Highline 1.6 (P)",
+      "Comfortline 1.6 (P)",
+      "Highline 1.2 (P) Dsg",
+      "Highline Plus 1.2 (P) Dsg",
+      "Trendline 1.5 (D)",
+      "Comfortline 1.5 (D)",
+      "Highline 1.5 (D)",
+      "Highline 1.5 (D) Dsg",
+      "Highline Plus 1.5 (D) Dsg",
+      "Gt Line (D)",
+      "Gt Line (P) Dsg",
+      "Trendline",
+      "Comfortline",
+      "Highline",
+      "Highline Plus"
+    ]
+  },
+  {
+    "make": "Volvo",
+    "model": "S60",
+    "fuel_types": [
+      "Petrol",
+      "Diesel"
+    ],
+    "variants": [
+      "Polestar",
+      "Momentum"
+    ]
+  },
+  {
+    "make": "Volvo",
+    "model": "S60 Cross Country",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "D4"
+    ]
+  },
+  {
+    "make": "Volvo",
+    "model": "S90",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "D4 Inscription"
+    ]
+  },
+  {
+    "make": "Volvo",
+    "model": "V40",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Kinetic",
+      "R Design"
+    ]
+  },
+  {
+    "make": "Volvo",
+    "model": "V40 Cross Country",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "D3",
+      "T4"
+    ]
+  },
+  {
+    "make": "Volvo",
+    "model": "V90 Cross Country",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "D5 Inscription"
+    ]
+  },
+  {
+    "make": "Volvo",
+    "model": "Xc40",
+    "fuel_types": [
+      "Diesel",
+      "Petrol"
+    ],
+    "variants": [
+      "D4 Momentum",
+      "D4 Inscription",
+      "T4 R-Design"
+    ]
+  },
+  {
+    "make": "Volvo",
+    "model": "Xc60",
+    "fuel_types": [
+      "Diesel"
+    ],
+    "variants": [
+      "Inscription D5"
+    ]
+  },
+  {
+    "make": "Volvo",
+    "model": "Xc90",
+    "fuel_types": [
+      "Diesel",
+      "Hybrid"
+    ],
+    "variants": [
+      "D5 Inscription",
+      "D5 Momentum",
+      "T8 Excellence",
+      "T8 Inscription",
+      "D5 R-Design"
+    ]
+  }
+]
