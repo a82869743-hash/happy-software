@@ -96,14 +96,13 @@ export function renderDivisionBillHtml(config: DivisionConfig, data: DivisionBil
     tableHeadersHtml = `
       <tr style="background: #E04E1D; color: #fff; font-size: 10px; font-weight: 700;">
         <th style="padding: 5px 6px; text-align: center; width: 30px; border-right: 1px solid #ff8860;">#</th>
-        <th style="padding: 5px 6px; text-align: left; width: 80px; border-right: 1px solid #ff8860;">Date</th>
-        <th style="padding: 5px 6px; text-align: left; width: 95px; border-right: 1px solid #ff8860;">Doc / Job No</th>
-        <th style="padding: 5px 8px; text-align: left; width: 140px; border-right: 1px solid #ff8860;">Vehicle (Reg & Model)</th>
+        <th style="padding: 5px 6px; text-align: left; width: 85px; border-right: 1px solid #ff8860;">Date</th>
+        <th style="padding: 5px 6px; text-align: left; width: 100px; border-right: 1px solid #ff8860;">Doc / Job No</th>
+        <th style="padding: 5px 8px; text-align: left; width: 155px; border-right: 1px solid #ff8860;">Vehicle (Reg & Model)</th>
         <th style="padding: 5px 8px; text-align: left; border-right: 1px solid #ff8860;">Service / Description</th>
-        <th style="padding: 5px 8px; text-align: right; width: 75px; border-right: 1px solid #ff8860;">Billed ₹</th>
-        <th style="padding: 5px 8px; text-align: right; width: 70px; border-right: 1px solid #ff8860;">Paid ₹</th>
-        <th style="padding: 5px 8px; text-align: right; width: 80px; border-right: 1px solid #ff8860;">${data.isSettled ? 'Settled ₹' : 'Due ₹'}</th>
-        <th style="padding: 5px 6px; text-align: center; width: 55px;">Status</th>
+        <th style="padding: 5px 8px; text-align: right; width: 85px; border-right: 1px solid #ff8860;">Billed ₹</th>
+        <th style="padding: 5px 8px; text-align: right; width: 80px; border-right: 1px solid #ff8860;">Paid ₹</th>
+        <th style="padding: 5px 8px; text-align: right; width: 90px;">${data.isSettled ? 'Settled ₹' : 'Due ₹'}</th>
       </tr>
     `;
 
@@ -132,16 +131,7 @@ export function renderDivisionBillHtml(config: DivisionConfig, data: DivisionBil
           <td style="padding: 5px 8px; border-right: 1px solid #ddd; color: #222;">${sType}</td>
           <td style="padding: 5px 8px; text-align: right; border-right: 1px solid #ddd; font-weight: 600;">₹${bAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
           <td style="padding: 5px 8px; text-align: right; border-right: 1px solid #ddd; font-weight: 600; color: #047857;">₹${pAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          <td style="padding: 5px 8px; text-align: right; border-right: 1px solid #ddd; font-weight: 700; color: #111;">₹${dAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-          <td style="padding: 5px 6px; text-align: center;">
-            <span style="display: inline-block; font-size: 8px; font-weight: 800; padding: 1px 5px; border-radius: 3px; ${
-              data.isSettled || dAmt <= 0
-                ? 'background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;'
-                : 'background: #fff1f2; color: #be123c; border: 1px solid #fecdd3;'
-            }">
-              ${data.isSettled || dAmt <= 0 ? 'PAID' : 'DUE'}
-            </span>
-          </td>
+          <td style="padding: 5px 8px; text-align: right; font-weight: 700; color: #111;">₹${dAmt.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
         </tr>
       `;
     }).join('');
@@ -152,8 +142,7 @@ export function renderDivisionBillHtml(config: DivisionConfig, data: DivisionBil
         <td style="padding: 5px 6px; border-right: 1.5px solid #222;" colspan="4">Total (${docs.length} jobs)</td>
         <td style="padding: 5px 8px; text-align: right; border-right: 1.5px solid #222;">${fmtCurrency(totalBilled)}</td>
         <td style="padding: 5px 8px; text-align: right; border-right: 1.5px solid #222; color: #047857;">${fmtCurrency(paidAmount)}</td>
-        <td style="padding: 5px 8px; text-align: right; border-right: 1.5px solid #222; font-weight: 800; color: ${balanceDue > 0 ? '#b91c1c' : '#047857'};">${fmtCurrency(balanceDue)}</td>
-        <td style="padding: 5px 6px;"></td>
+        <td style="padding: 5px 8px; text-align: right; font-weight: 800; color: ${balanceDue > 0 ? '#b91c1c' : '#047857'};">${fmtCurrency(balanceDue)}</td>
       </tr>
     `;
   } else {
